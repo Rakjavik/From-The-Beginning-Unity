@@ -24,10 +24,10 @@
             inventory = new Inventory(1, gameObject);
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
             floorYPosition = yFloorPositionToScaleRatio;
-            Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject,null,true);
-            distanceToTargetValid = myBeing.getCurrentSize();
+            Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject,null);
+            distanceToTargetValidRatio = 5.0f;
+            distanceToTargetValid = myBeing.getCurrentSize()*distanceToTargetValidRatio;
             setBeing(myBeing);
-            
         }
 
 
@@ -76,7 +76,7 @@
 
         private void initializeChildBeing(CritterAgent child, GameObject gameObject,char gender,string name,Critter[] parents)
         {
-            Critter childCritter = new Critter(name, gender, gameObject,parents,true);
+            Critter childCritter = new Critter(name, gender, gameObject,parents);
             child.setBeing(childCritter);
         }
 

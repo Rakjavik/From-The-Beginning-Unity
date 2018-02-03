@@ -16,7 +16,7 @@ namespace rak.being.species
 
         protected bool waitingToGiveBirth = false;
 
-        protected Species(string name,char gender,GameObject gameObject,bool canBePregnant) : base(name,gender, canBePregnant)
+        protected Species(string name,char gender,GameObject gameObject) : base(name,gender)
         {
             timePregnant = 0;
         }

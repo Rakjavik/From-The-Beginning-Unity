@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RAKResource : MonoBehaviour {
 
-    private bool claimed = false;
+    public bool claimed = false;
 
 	// Use this for initialization
 	void Start () {

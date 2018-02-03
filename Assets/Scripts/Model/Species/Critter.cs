@@ -6,7 +6,7 @@ namespace rak.being.species.critter
     public class Critter : Species
     {
 
-        public Critter(string name,char gender,GameObject gameObject,Critter[] parents,bool canBePregnant) : base(name,gender,gameObject,canBePregnant)
+        public Critter(string name,char gender,GameObject gameObject,Critter[] parents) : base(name,gender,gameObject)
         {
             this.gameObject = gameObject;
 
@@ -16,10 +16,11 @@ namespace rak.being.species.critter
             gestationType = 'l'; // Live birth
             gestationTime = 5;
             reproductionType = 'a';
+            canBePregnant = true;
             maxAge = 1000;
-            growthToAgeRatio = .005;
-            stopGrowingAt = 200;
-            minSize = .2f;
+            growthToAgeRatio = .001;
+            stopGrowingAt = 100;
+            minSize = .1f;
             currentSize = minSize;
             navMeshAgentSpeed = 1.5f;
             name = Util.getRandomString("Critter") + " " + name;

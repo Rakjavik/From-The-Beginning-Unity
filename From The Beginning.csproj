@@ -297,6 +297,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\BaseScript.cs" />
+    <Compile Include="Assets\Scripts\BirdAgent.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\CritterAgent.cs" />
     <Compile Include="Assets\Scripts\GUI\MainGUI.cs" />
@@ -304,6 +305,7 @@
     <Compile Include="Assets\Scripts\Model\Agent.cs" />
     <Compile Include="Assets\Scripts\Model\being.cs" />
     <Compile Include="Assets\Scripts\Model\gender.cs" />
+    <Compile Include="Assets\Scripts\Model\Species\Bird.cs" />
     <Compile Include="Assets\Scripts\Model\Species\Critter.cs" />
     <Compile Include="Assets\Scripts\Model\Species\SocialAspects.cs" />
     <Compile Include="Assets\Scripts\Model\Species\Species.cs" />

@@ -93,14 +93,6 @@ namespace rak.util
                     //Debug.Log(gameObject.name + " can't find target with tag " + tag);
                 }
             }
-            // Closest target found //
-            if (closest != null)
-            {
-                if (Tags.TAG_RESOURCE.Equals(tag))
-                {
-                    closest.GetComponent<RAKResource>().setClaimed(true);
-                }
-            }
             return closest;
         }
     }

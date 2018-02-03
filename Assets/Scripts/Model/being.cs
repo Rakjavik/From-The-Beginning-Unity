@@ -23,11 +23,20 @@ namespace rak.being
         protected Being[] parents;
         protected Being[] children;
 
-        protected Being(string name,char gender,bool canBePregnant)
+        protected Being(string name,char gender)
         {
             this.name = name;
             this.gender = gender;
-            this.canBePregnant = canBePregnant;
+            if(gender == 'r')
+            {
+                if(Time.time % 1 == 0)
+                {
+                    gender = 'm';
+                } else
+                {
+                    gender = 'f';
+                }
+            }
             parents = new Being[0];
             children = new Being[0];
             alive = true;

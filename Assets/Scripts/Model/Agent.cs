@@ -16,8 +16,8 @@
     {
         protected Species being;
 
-        protected static float floorYPosition; //Y position when agent is close to ground, Set in child object
-        protected static float distanceToTargetValid; //Distance from target object before it's considered close enough to touch, Set in child object
+        protected float floorYPosition; //Y position when agent is close to ground, Set in child object
+        protected float distanceToTargetValid; //Distance from target object before it's considered close enough to touch, Set in child object
 
         public bool DEBUG_RESOURCES_PERMANENT; // Agent does not deplete resources when picking up
         public bool DEBUG_CRITTER;
@@ -38,6 +38,8 @@
         protected Collider collider; // Collider
         //protected GameObject target; // Agent's movement destination
         protected JobQueue jobQueue; // Job queue
+        protected float distanceToTargetValidRatio;
+        protected float yFloorPositionToScaleRatio;
 
         // Use this for initialization
         void Start()
@@ -156,86 +158,6 @@
             return currentTask;
         }
 
-        /*private void gatherResources()
-        {
-            GameObject target = jobQueue.getCurrentJob().getTarget();
-            // Look for a target if agent not selected and the mesh agent is active //
-            if (target == null && !selected && agent.isActiveAndEnabled)
-            {
-
-                if (!DEBUG_DISABLE_RESOURCE_COLLECTION)
-                {
-                    // If agent has empty space, find closest resource //
-                    if (inventory.hasEmptySpace())
-                    {
-                        target = FindClosest(Tags.TAG_RESOURCE);
-                    }
-                    // Inventory is full, find closest base for drop off //
-                    else
-                    {
-                        target = FindClosest(Tags.TAG_BASE);
-                    }
-                    // Target has been found //
-                    if (target != null)
-                    {
-                        // Make sure the agent is active and on the mesh //
-                        if (agent.isActiveAndEnabled && agent.isOnNavMesh)
-                        {
-                            agent.SetDestination(target.transform.position);
-                        }
-                    }
-                }
-                if(target == null)
-                {
-                    // No target found, IDLE //
-                    currentTask = Tasks.getNewTask(Tasks.TaskType.IDLE,jobQueue);
-                }
-            }
-            // Object has a target, proceed with action //
-            else if (target != null)
-            {
-                // Get distance from agent to target //
-                float magnitude = (transform.position - target.transform.position).magnitude;
-                // If agent is close enough to be considered at arrived //
-                if (magnitude < distanceToTargetValid)
-                {
-                    if (target.tag.Equals(Tags.TAG_RESOURCE))
-                    {
-                        // Try to add item to inventory //
-                        if (inventory.addItem(target))
-                        {
-                            // Item added, clear target //
-                            if (!DEBUG_RESOURCES_PERMANENT)
-                            {
-                                MeshRenderer targetMesh = target.GetComponent<MeshRenderer>();
-                                targetMesh.enabled = false;
-                            }
-                            target = null;
-                        }
-                    }
-                    else if (target.tag.Equals(Tags.TAG_BASE))
-                    {
-                        // Try to transfer item to base //
-                        if (target.GetComponent<BaseScript>().transferItem(inventory.get(0)))
-                        {
-                            if (DEBUG_RESOURCES_PERMANENT)
-                            {
-                                inventory.get(0).GetComponent<Resource>().setClaimed(false);
-                            }
-                            // Item transferred, clear target //
-                            inventory.removeItem(inventory.get(0));
-                            target = null;
-                        }
-                        else
-                        {
-                            Debug.Log("problem transffering item to base");
-                        }
-
-                    }
-                }
-            }
-        }*/
-
         // Controls selection //
         public void setSelected(bool selected)
         {
@@ -337,8 +259,8 @@
             if (transform.GetChild(0).localScale.x != currentSize)
             {
                 transform.GetChild(0).localScale = new Vector3(currentSize, currentSize, currentSize);
-                distanceToTargetValid = currentSize;
-                floorYPosition = currentSize * CritterAgent.yFloorPositionToScaleRatio;
+                distanceToTargetValid = currentSize * distanceToTargetValidRatio;
+                floorYPosition = currentSize * yFloorPositionToScaleRatio;
                 //debug(floorYPosition.ToString());
             }
         }

@@ -14,7 +14,7 @@ public class ResourceTree : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        dropResourceEvery = 10.0f;
+        dropResourceEvery = 5.0f;
         lastDropLocation = 0;
         lastDropped = 0;
         offset = new Vector3(-1.5f, 0, 1.0f);

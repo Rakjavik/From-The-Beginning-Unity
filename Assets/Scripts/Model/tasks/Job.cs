@@ -48,6 +48,10 @@ namespace rak.work.job
                 else if (targetType == TargetType.Resource)
                 {
                     target = Util.FindClosest(Tags.TAG_RESOURCE, transform);
+                    if(target != null)
+                    {
+                        target.GetComponent<RAKResource>().setClaimed(true);
+                    }
                 }
             }
             return target;
