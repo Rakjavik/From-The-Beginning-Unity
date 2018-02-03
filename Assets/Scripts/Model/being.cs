@@ -1,0 +1,119 @@
+﻿using rak.being.species;
+using rak.being.species.critter;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace rak.being
+{
+    public class Being
+    {
+        protected bool alive;
+        protected double age;
+        protected string name;
+        protected char gender;
+        protected bool canBePregnant;
+        protected float currentSize;
+        protected int maxAge;
+        protected double growthToAgeRatio;
+        protected int stopGrowingAt;
+        protected float minSize;
+        protected float navMeshAgentSpeed;
+
+        protected Being[] parents;
+        protected Being[] children;
+
+        protected Being(string name,char gender,bool canBePregnant)
+        {
+            this.name = name;
+            this.gender = gender;
+            this.canBePregnant = canBePregnant;
+            parents = new Being[0];
+            children = new Being[0];
+            alive = true;
+            age = 0;
+        }
+
+        public void addParent(Being newParent)
+        {
+            List<Being> parents = new List<Being>();
+            parents.Add(newParent);
+            if (this.parents != null)
+            {
+                for (int count = 0; count < this.parents.Length; count++)
+                {
+                    parents.Add(this.parents[count]);
+                }
+            }
+            this.parents = parents.ToArray();
+        }
+        public void addChild(Being newChild)
+        {
+            List<Being> children = new List<Being>();
+            children.Add(newChild);
+            if (this.children != null)
+            {
+                for (int count = 0; count < this.children.Length; count++)
+                {
+                    children.Add(this.children[count]);
+                }
+            }
+            this.children = children.ToArray();
+        }
+
+        public bool isAlive()
+        {
+            return alive;
+        }
+        public double getAge()
+        {
+            return age;
+        }
+        public string getName()
+        {
+            return name;
+        }
+        public char getGender()
+        {
+            return gender;
+        }
+        public void ageBeing(float time,float changeScaleEvery)
+        {
+            age += time;
+            if(age > maxAge)
+            {
+                alive = false;
+                Debug.Log(name + " has died of old age at - " + maxAge);
+            }
+            else if (age < stopGrowingAt)
+            {
+                float newSize = (float)(age * growthToAgeRatio) + minSize;
+                //Debug.Log("Size - " + newSize);
+                if (newSize > minSize && newSize - currentSize > changeScaleEvery)
+                {
+                    currentSize = newSize;
+                }
+            }
+        }
+        public bool canGetPregnant()
+        {
+            return canBePregnant;
+        }
+        public Being[] getParents()
+        {
+            return parents;
+        }
+        public Being[] getChildren()
+        {
+            return children;
+        }
+        public float getCurrentSize()
+        {
+            return currentSize;
+        }
+        public float getNavMeshAgentSpeed()
+        {
+            return navMeshAgentSpeed;
+        }
+    }
+}
