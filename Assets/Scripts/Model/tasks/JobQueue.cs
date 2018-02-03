@@ -36,7 +36,7 @@ namespace rak.work.job {
         }
         public Job getCurrentJob()
         {
-            if (currentJob == null || currentJob.completed())
+            if (currentJob == null || currentJob.completed() || currentJob.isThisType(Job.JobType.IDLE))
             {
                 if (jobList.Count > 0)
                 {

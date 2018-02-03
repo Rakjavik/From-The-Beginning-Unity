@@ -70,7 +70,7 @@ namespace rak.util
                     if (renderer.enabled)
                     {
                         // Set claimed so we only have one agent at a time //
-                        if (!go.GetComponent<Resource>().isClaimed())
+                        if (!go.GetComponent<RAKResource>().isClaimed())
                         {
                             valid = true;
                         }
@@ -98,7 +98,7 @@ namespace rak.util
             {
                 if (Tags.TAG_RESOURCE.Equals(tag))
                 {
-                    closest.GetComponent<Resource>().setClaimed(true);
+                    closest.GetComponent<RAKResource>().setClaimed(true);
                 }
             }
             return closest;

@@ -313,11 +313,13 @@
     <Compile Include="Assets\Scripts\Model\tasks\Tasks.cs" />
     <Compile Include="Assets\Scripts\MoveInCircles.cs" />
     <Compile Include="Assets\Scripts\MoveToDestination.cs" />
+    <Compile Include="Assets\Scripts\NonLiving\ResourceTree.cs" />
     <Compile Include="Assets\Scripts\RAKInteractable.cs" />
+    <Compile Include="Assets\Scripts\RAKResource.cs" />
     <Compile Include="Assets\Scripts\RAKVRInputController.cs" />
     <Compile Include="Assets\Scripts\RAKVRroom.cs" />
-    <Compile Include="Assets\Scripts\Resource.cs" />
     <Compile Include="Assets\Scripts\Tags.cs" />
+    <Compile Include="Assets\Scripts\Things\ResourceTree.cs" />
     <Compile Include="Assets\Scripts\Util\Util.cs" />
     <Compile Include="Assets\Scripts\ViewFollow.cs" />
     <Compile Include="Assets\Scripts\Wander.cs" />
