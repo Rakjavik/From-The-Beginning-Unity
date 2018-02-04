@@ -59,28 +59,35 @@
             }
             agent = GetComponentInChildren<NavMeshAgent>();
             collider = GetComponentInChildren<Collider>();
-            //activeTasks = new List<Task>();
             jobQueue = new JobQueue(this);
-            //currentTask = Tasks.getNewTask(Tasks.TaskType.IDLE,jobQueue);
+            currentTask = jobQueue.getNextTask();
         }
         // Update is called once per frame
         protected void Update()
         {
+            // Make sure agent is not moving if it selected //
             if(selected)
             {
                 collider.attachedRigidbody.velocity = Vector3.zero;
             }
-            Job currentJob = jobQueue.getCurrentJob();
-            // No jobs in queue //
-            if (currentJob == null)
+
+            if(currentTask.isCompleted())
             {
                 currentTask = jobQueue.getNextTask();
-                currentJob = jobQueue.getCurrentJob();
             }
+            // Attempt to get the current job //
+            Job currentJob = jobQueue.getCurrentJob();
+
+            // The job's target //
             GameObject target = null;
-            if (currentJob.getTargetType() != Job.TargetType.None) {
-                target = currentJob.getTarget(transform);
+            //if (currentJob.getTargetType() != Job.TargetType.None && !currentJob.hasTarget()) {
+                //target = currentJob.getNewTarget(transform);
+            //}
+            if (currentJob.hasTarget())
+            {
+                target = currentJob.getTarget();
             }
+            // There is a valid target for this job //
             if (target != null)
             {
                 // Can't set destination if agent is selected //
@@ -96,15 +103,13 @@
                     if (currentJob.isThisType(Job.JobType.DropOff))
                     {
                         GameObject item = inventory.get(0);
-                        if (item != null)
+                        if (target.GetComponent<BaseScript>().addItem(item))
                         {
-                            if (target.GetComponent<BaseScript>().addItem(item))
-                            {
-                                inventory.removeItem(item);
-                            }
-                        }else
-                        {
-                            currentJob.setComplete();
+                            MeshRenderer renderer = item.GetComponent<MeshRenderer>();
+                            renderer.enabled = false;
+                            item.transform.SetParent(target.transform);
+                            inventory.removeItem(item);
+                            jobQueue.completeCurrentJob(currentTask);
                         }
                     }
                     else if (currentJob.isThisType(Job.JobType.PickUp))
@@ -112,18 +117,27 @@
                         // Try to add item to inventory //
                         if (inventory.addItem(target))
                         {
+                            target.transform.SetParent(this.transform);
+                            
                             // Item added, clear target //
                             if (!DEBUG_RESOURCES_PERMANENT)
                             {
-                                MeshRenderer targetMesh = target.GetComponent<MeshRenderer>();
-                                targetMesh.enabled = false;
+                                // If the agent only has one inventory slot, let's see it carrying the object //
+                                if (inventory.getMaxInventorySize() > 1)
+                                {
+                                    MeshRenderer targetMesh = target.GetComponent<MeshRenderer>();
+                                    targetMesh.enabled = false;
+                                }
                             }
+                            jobQueue.completeCurrentJob(currentTask);
                         }
                     }
-                    currentJob.setComplete();
                 }
             }
-
+            if(currentTask.isThisTask(Tasks.TaskType.IDLE))
+            {
+                jobQueue.completeCurrentJob(currentTask);
+            }
             // Object needs a target but is not active on the nav mesh, and is not selected //
             // Object has just been released and is falling toward the ground //
             if (!agent.isActiveAndEnabled)

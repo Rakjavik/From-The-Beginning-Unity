@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -66,7 +67,7 @@ public class Inventory
 
     public GameObject get(int index)
     {
-        return items[index];
+       return items[index];
     }
 
     public int getMaxInventorySize()

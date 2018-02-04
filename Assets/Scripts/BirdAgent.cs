@@ -8,7 +8,6 @@ namespace rak.unity
     public class BirdAgent : Agent
     {
         public static float changeScaleEvery = .05f;
-        public static float yFloorPositionToScaleRatio = -2.1f;
 
         // Use this for initialization
         void Start()
@@ -35,15 +34,11 @@ namespace rak.unity
         private void updateViewScreen()
         {
             StringBuilder stringBuilder = new StringBuilder("--Name--\n").AppendLine(getBeing().getName()).AppendLine("--Current Job--");
-            /*foreach (GameObject item in inventory.getItems())
-            {
-                stringBuilder.AppendLine(item.name);
-            }*/
             stringBuilder.AppendLine(getCurrentTask().getTaskName());
             stringBuilder.AppendLine("--Target--");
-            if (jobQueue.getCurrentJobTarget(transform) != null)
+            if (jobQueue.getCurrentJobTarget() != null)
             {
-                stringBuilder.AppendLine(jobQueue.getCurrentJobTarget(transform).name);
+                stringBuilder.AppendLine(jobQueue.getCurrentJobTarget().name);
             }
             else
             {

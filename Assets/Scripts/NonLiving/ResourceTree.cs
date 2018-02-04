@@ -33,8 +33,8 @@ public class ResourceTree : MonoBehaviour
             }
             lastDropLocation = randomDrop;
             Transform drop = transform.Find("Drop" + randomDrop);
-            GameObject resource = (GameObject)Instantiate(Resources.Load("Resource"),drop);
-            resource.transform.SetParent(this.transform);
+            GameObject resource = (GameObject)Instantiate(Resources.Load("prefabs/Resource"),drop);
+            resource.transform.SetParent(this.transform.parent);
             resource.transform.position += offset;
         }
     }

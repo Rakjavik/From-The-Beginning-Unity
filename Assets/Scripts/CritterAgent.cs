@@ -15,7 +15,7 @@
     {
 
         public static float changeScaleEvery = .05f;
-        public static float yFloorPositionToScaleRatio = -2.1f;
+        public static Material[] critterMaterials;
 
         // Use this for initialization
         void Start()
@@ -26,10 +26,15 @@
             floorYPosition = yFloorPositionToScaleRatio;
             Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject,null);
             distanceToTargetValidRatio = 5.0f;
+            yFloorPositionToScaleRatio = -2.1f;
             distanceToTargetValid = myBeing.getCurrentSize()*distanceToTargetValidRatio;
             setBeing(myBeing);
-        }
 
+            critterMaterials = new Material[2];
+
+            critterMaterials[0] = (Material)Resources.Load("Materials/lava_001");
+            critterMaterials[1] = (Material)Resources.Load("Materials/lava_002");
+        }
 
         // Update is called once per frame
         new void Update()
@@ -49,9 +54,9 @@
             }*/
             stringBuilder.AppendLine(getCurrentTask().getTaskName());
             stringBuilder.AppendLine("--Target--");
-            if (jobQueue.getCurrentJobTarget(transform) != null)
+            if (jobQueue.getCurrentJobTarget() != null)
             {
-                stringBuilder.AppendLine(jobQueue.getCurrentJobTarget(transform).name);
+                stringBuilder.AppendLine(jobQueue.getCurrentJobTarget().name);
             }
             else
             {
@@ -86,9 +91,17 @@
             //CritterAgent child = Object.Instantiate(this,transform.forward*1,transform.rotation);
             CritterAgent child = Object.Instantiate(this, this.transform.parent,true);
             child.transform.position = transform.position;
-            
             child.initializeAgent();
 
+            Material childMaterial;
+            if (Time.time % 2 <= 1)
+            {
+                childMaterial = critterMaterials[0];
+            } else
+            {
+                childMaterial = critterMaterials[1];
+            }
+            GetComponentInChildren<Renderer>().material = childMaterial;
             //Critter childCritter = (Critter)child.getBeing();
             initializeChildBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
             being.addChild(child.getBeing());

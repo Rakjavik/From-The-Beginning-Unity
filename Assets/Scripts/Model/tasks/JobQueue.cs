@@ -16,43 +16,16 @@ namespace rak.work.job {
         {
             this.agent = agent;
             jobList = new List<Job>();
+            currentJob = Job.getEmpty();
         }
 
-        public void addNewJobToBottom(Job job)
-        {
-            jobList.Add(job);
-        }
-        public void addNewJobToTop(Job job)
-        {
-            jobList.Insert(0, job);
-        }
-        public void removeJob(Job job)
-        {
-            jobList.Remove(job);
-        }
-        public void cancelCurrentJob()
-        {
-            currentJob = null;
-        }
         public Job getCurrentJob()
         {
-            if (currentJob == null || currentJob.completed() || currentJob.isThisType(Job.JobType.IDLE))
-            {
-                if (jobList.Count > 0)
-                {
-                    currentJob = jobList[0];
-                    jobList.RemoveAt(0);
-                }
-                else
-                {
-                    return null;
-                }
-            }
             return currentJob;
         }
-        public GameObject getCurrentJobTarget(Transform transform)
+        public GameObject getCurrentJobTarget()
         {
-            return currentJob.getTarget(transform);
+            return currentJob.getTarget();
         }
         public int addJobsToBottom(Job[] jobs)
         {
@@ -63,18 +36,56 @@ namespace rak.work.job {
             return jobList.Count;
         }
 
+        // Completed current job, removes it from job queue and sets the next job, or completed the current task //
+        public void completeCurrentJob(Task currentTask)
+        {
+            jobList.Remove(currentJob);
+            if (jobList.Count > 0)
+            {
+                currentJob = jobList[0];
+                currentJob.getNewTarget(agent.transform);
+            }
+            else
+            {
+                currentTask.markComplete();
+            }
+        }
+
+        // Task was completed, Get a new task and set the current job, and job target //
         public Task getNextTask()
         {
             Task task;
-            if(Util.FindClosest(Tags.TAG_RESOURCE,agent.transform) || agent.getInventory().getItems().Count > 0)
+            // Resources exist //
+            if(Util.FindClosest(Tags.TAG_RESOURCE,agent.transform))
             {
                 task = Tasks.getNewTask(Tasks.TaskType.RESOURCE_GATHERING, this);
+                
+                // Starts with pickup, let's see if that's possible //
+                if (!agent.getInventory().hasEmptySpace())
+                {
+                    // Skip to drop off //
+                    jobList.RemoveAt(0);
+                }
+                currentJob = jobList[0];
+                currentJob.getNewTarget(agent.transform);
             }
+            // No tasks, go Idle //
             else
             {
                 task = Tasks.getNewTask(Tasks.TaskType.IDLE, this);
             }
             return task;
+        }
+        // Searches job list and removes Jobs generated from the task //
+        private void removeTaskJobs(Task task)
+        {
+            for(int count = 0; count < jobList.Count; count++)
+            {
+                if(jobList[count].getAssociateTask() == task)
+                {
+                    jobList.Remove(jobList[count]);
+                }
+            }
         }
     }
 }

@@ -97,7 +97,6 @@ namespace rak.being
             else if (age < stopGrowingAt)
             {
                 float newSize = (float)(age * growthToAgeRatio) + minSize;
-                //Debug.Log("Size - " + newSize);
                 if (newSize > minSize && newSize - currentSize > changeScaleEvery)
                 {
                     currentSize = newSize;

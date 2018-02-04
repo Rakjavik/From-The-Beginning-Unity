@@ -6,7 +6,7 @@ namespace rak.work.job
 {
     public class Job
     {
-        public enum JobType { PickUp,DropOff,IDLE };
+        public enum JobType {PickUp,DropOff,IDLE};
         public enum TargetType {Base,Resource,None};
 
         private JobType jobType;
@@ -18,11 +18,14 @@ namespace rak.work.job
         public Job() {
             complete = false;
         }
-
+        public Job(JobType jobType,TargetType targetType)
+        {
+            this.jobType = jobType;
+            this.targetType = targetType;
+        }
 
         public Job(Task associatedTask,JobType jobType,TargetType targetType)
         {
-            complete = false;
             initialize(associatedTask, jobType, targetType);
         }
 
@@ -31,38 +34,52 @@ namespace rak.work.job
             this.targetType = targetType;
             this.associatedTask = associatedTask;
             this.jobType = jobType;
+            complete = false;
         }
-
+        public static Job getEmpty()
+        {
+            Job job = new Job(JobType.IDLE,TargetType.None);
+            return job;
+        }
+        public bool isEmpty()
+        {
+            if(jobType == JobType.IDLE && targetType == TargetType.None)
+            {
+                return true;
+            }
+            return false;
+        }
         public void setTarget(GameObject target)
         {
             this.target = target;
         }
-        public GameObject getTarget(Transform transform)
+        public GameObject getNewTarget(Transform transform)
         {
-            if(target == null)
+            if(targetType == TargetType.Base)
             {
-                if(targetType == TargetType.Base)
+                target = Util.FindClosest(Tags.TAG_BASE, transform);
+            }
+            else if (targetType == TargetType.Resource)
+            {
+                target = Util.FindClosest(Tags.TAG_RESOURCE, transform);
+                if(target != null)
                 {
-                    target = Util.FindClosest(Tags.TAG_BASE, transform);
-                }
-                else if (targetType == TargetType.Resource)
-                {
-                    target = Util.FindClosest(Tags.TAG_RESOURCE, transform);
-                    if(target != null)
-                    {
-                        target.GetComponent<RAKResource>().setClaimed(true);
-                    }
+                    target.GetComponent<RAKResource>().setClaimed(true);
                 }
             }
             return target;
         }
-        public bool completed()
+        public GameObject getTarget()
         {
-            return complete;
+            return target;
         }
-        public void setComplete()
+        public bool hasTarget()
         {
-            this.complete = true;
+            if(target != null)
+            {
+                return true;
+            }
+            return false;
         }
         public bool isThisType(JobType type)
         {
@@ -71,6 +88,14 @@ namespace rak.work.job
         public TargetType getTargetType()
         {
             return targetType;
+        }
+        public bool isCompleted()
+        {
+            return complete;
+        }
+        public Task getAssociateTask()
+        {
+            return associatedTask;
         }
     }
 }

@@ -8,8 +8,9 @@ namespace rak.work.tasks
         private string shortName;
         private bool requirements;
         private Tasks.TaskType taskType;
+        private bool complete;
 
-        private Job[] jobList;
+        private Job[] staticListOfJobsForTask;
 
         public Task() { }
         public Task(string taskName,string shortName,bool requirements,Tasks.TaskType taskType)
@@ -18,7 +19,8 @@ namespace rak.work.tasks
             this.shortName = shortName;
             this.requirements = requirements;
             this.taskType = taskType;
-            jobList = generateJobList();
+            staticListOfJobsForTask = generateJobList();
+            complete = false;
         }
         
         public string getTaskName()
@@ -33,10 +35,6 @@ namespace rak.work.tasks
         {
             return requirements;
         }
-        public bool isThisTask(Task taskName)
-        {
-            return taskName.Equals(this.taskName);
-        }
         public Tasks.TaskType getTaskType()
         {
             return taskType;
@@ -47,7 +45,15 @@ namespace rak.work.tasks
         }
         public Job[] getJobList()
         {
-            return jobList;
+            return staticListOfJobsForTask;
+        }
+        public bool isCompleted()
+        {
+            return complete;
+        }
+        public void markComplete()
+        {
+            complete = true;
         }
 
         private Job[] generateJobList()
