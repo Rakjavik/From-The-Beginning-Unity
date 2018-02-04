@@ -49,13 +49,14 @@ namespace rak.util
         }
 
         // Find closes object based on tag //
-        public static GameObject FindClosest(string tag,Transform transform)
+        public static GameObject FindClosest(string tag, Transform transform)
         {
             GameObject[] gos;
             gos = GameObject.FindGameObjectsWithTag(tag);
             GameObject closest = null;
             float distance = Mathf.Infinity; // Any distance
             Vector3 position = transform.position;
+            
             foreach (GameObject go in gos)
             {
                 bool valid = false; // Did we find a valid object
@@ -65,15 +66,10 @@ namespace rak.util
                 }
                 else if (Tags.TAG_RESOURCE.Equals(tag)) // Is a resource
                 {
-                    // Check that the resource is in a state that it can be picked up //
-                    MeshRenderer renderer = go.GetComponent<MeshRenderer>();
-                    if (renderer.enabled)
+                    // Set claimed so we only have one agent at a time //
+                    if (!go.GetComponent<RAKResource>().isClaimed())
                     {
-                        // Set claimed so we only have one agent at a time //
-                        if (!go.GetComponent<RAKResource>().isClaimed())
-                        {
-                            valid = true;
-                        }
+                        valid = true;
                     }
                 }
                 // A valid target was found //
@@ -83,14 +79,14 @@ namespace rak.util
                     float curDistance = diff.sqrMagnitude;
                     if (curDistance < distance)
                     {
+                        if(curDistance < .1)
+                        {
+                            Debug.Log("");
+                        }
                         closest = go;
                         distance = curDistance;
+                        Debug.Log("Closes object distance - " + curDistance);
                     }
-                }
-                // Could not find valid target for agent //
-                else
-                {
-                    //Debug.Log(gameObject.name + " can't find target with tag " + tag);
                 }
             }
             return closest;

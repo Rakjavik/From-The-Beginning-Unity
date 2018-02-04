@@ -102,6 +102,7 @@
                 {
                     if (currentJob.isThisType(Job.JobType.DropOff))
                     {
+                        debug("At dropoff site - " + target.name);
                         GameObject item = inventory.get(0);
                         if (target.GetComponent<BaseScript>().addItem(item))
                         {
@@ -114,6 +115,7 @@
                     }
                     else if (currentJob.isThisType(Job.JobType.PickUp))
                     {
+                        debug("Picking up - " + target.name);
                         // Try to add item to inventory //
                         if (inventory.addItem(target))
                         {

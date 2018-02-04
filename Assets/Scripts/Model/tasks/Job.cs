@@ -53,7 +53,7 @@ namespace rak.work.job
         {
             this.target = target;
         }
-        public GameObject getNewTarget(Transform transform)
+        public void getNewTarget(Transform transform)
         {
             if(targetType == TargetType.Base)
             {
@@ -66,8 +66,16 @@ namespace rak.work.job
                 {
                     target.GetComponent<RAKResource>().setClaimed(true);
                 }
+                // No resources available in area //
+                else
+                {
+                    target = null;
+                }
             }
-            return target;
+            else if (targetType == TargetType.None)
+            {
+                target = null;
+            }
         }
         public GameObject getTarget()
         {

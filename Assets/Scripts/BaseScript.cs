@@ -22,10 +22,10 @@
         // Update is called once per frame
         void Update()
         {
-            StringBuilder stringBuilder = new StringBuilder(gameObject.name).AppendLine();
+            StringBuilder stringBuilder = new StringBuilder(gameObject.name);
             if (inventory.hasEmptySpace())
             {
-                stringBuilder.Append("\nInventory : ").Append(inventory.listItems(false)).Append("/").Append(inventory.getMaxInventorySize());
+                stringBuilder.Append("\nInventory : ").Append("\n" + inventory.listItems(false)).Append("/").Append(inventory.getMaxInventorySize());
             }
             else
             {
@@ -36,7 +36,8 @@
 
         public bool addItem(GameObject item)
         {
-            return inventory.addItem(item);
+            bool response = inventory.addItem(item);
+            return response;
         }
     }
 }

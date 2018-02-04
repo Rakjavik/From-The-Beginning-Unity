@@ -1867,8 +1867,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1910567497561954}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.27, y: 0.9911423, z: 1.39}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: -13.17, y: 0.9911423, z: 4.73}
+  m_LocalScale: {x: 0.29999998, y: 0.29999998, z: 0.29999998}
   m_Children:
   - {fileID: 224168713540051346}
   - {fileID: 4392736857188082}
@@ -7311,7 +7311,9 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Base Name
 
-    Inventory 10/10'
+    Inventory 10/10
+
+    BLARG'
 --- !u!222 &222182650329033318
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -7355,7 +7357,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -0.27000046, y: 1.4399986}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224250657180834796
 RectTransform:
@@ -7365,7 +7367,7 @@ RectTransform:
   m_GameObject: {fileID: 1743624032055112}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.12500057, y: 0.63472044, z: 1}
+  m_LocalScale: {x: 0.12656307, y: 0.63472044, z: 1}
   m_Children: []
   m_Father: {fileID: 224168713540051346}
   m_RootOrder: 0
@@ -7373,5 +7375,5 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}

@@ -33,21 +33,27 @@ namespace rak.work.job {
             {
                 jobList.Add(job);
             }
+            if(currentJob.isEmpty())
+            {
+                currentJob = jobList[0];
+                jobList.Remove(currentJob);
+            }
             return jobList.Count;
         }
 
         // Completed current job, removes it from job queue and sets the next job, or completed the current task //
         public void completeCurrentJob(Task currentTask)
         {
-            jobList.Remove(currentJob);
             if (jobList.Count > 0)
             {
                 currentJob = jobList[0];
+                jobList.Remove(currentJob);
                 currentJob.getNewTarget(agent.transform);
             }
             else
             {
                 currentTask.markComplete();
+                currentJob = Job.getEmpty();
             }
         }
 
@@ -56,7 +62,7 @@ namespace rak.work.job {
         {
             Task task;
             // Resources exist //
-            if(Util.FindClosest(Tags.TAG_RESOURCE,agent.transform))
+            if(Util.FindClosest(Tags.TAG_RESOURCE,agent.transform) != null)
             {
                 task = Tasks.getNewTask(Tasks.TaskType.RESOURCE_GATHERING, this);
                 
@@ -64,16 +70,17 @@ namespace rak.work.job {
                 if (!agent.getInventory().hasEmptySpace())
                 {
                     // Skip to drop off //
+                    currentJob = jobList[0];
                     jobList.RemoveAt(0);
                 }
-                currentJob = jobList[0];
-                currentJob.getNewTarget(agent.transform);
             }
             // No tasks, go Idle //
             else
             {
                 task = Tasks.getNewTask(Tasks.TaskType.IDLE, this);
+                
             }
+            currentJob.getNewTarget(agent.transform);
             return task;
         }
         // Searches job list and removes Jobs generated from the task //

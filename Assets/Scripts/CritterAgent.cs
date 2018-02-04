@@ -20,14 +20,19 @@
         // Use this for initialization
         void Start()
         {
-            base.initializeAgent(); // Super
+            initializeAgent();
+        }
+
+        public new void initializeAgent()
+        {
             inventory = new Inventory(1, gameObject);
+            base.initializeAgent();
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
             floorYPosition = yFloorPositionToScaleRatio;
-            Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject,null);
+            Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject, null);
             distanceToTargetValidRatio = 5.0f;
             yFloorPositionToScaleRatio = -2.1f;
-            distanceToTargetValid = myBeing.getCurrentSize()*distanceToTargetValidRatio;
+            distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
             setBeing(myBeing);
 
             critterMaterials = new Material[2];
@@ -88,9 +93,9 @@
         protected void birth()
         {
             being.birth();
-            //CritterAgent child = Object.Instantiate(this,transform.forward*1,transform.rotation);
             CritterAgent child = Object.Instantiate(this, this.transform.parent,true);
             child.transform.position = transform.position;
+            initializeChildBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
             child.initializeAgent();
 
             Material childMaterial;
@@ -102,8 +107,7 @@
                 childMaterial = critterMaterials[1];
             }
             GetComponentInChildren<Renderer>().material = childMaterial;
-            //Critter childCritter = (Critter)child.getBeing();
-            initializeChildBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
+            
             being.addChild(child.getBeing());
             NavMeshAgent agent = child.GetComponent<NavMeshAgent>();
             agent.speed = child.getBeing().getNavMeshAgentSpeed();
