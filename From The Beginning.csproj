@@ -321,7 +321,6 @@
     <Compile Include="Assets\Scripts\RAKVRInputController.cs" />
     <Compile Include="Assets\Scripts\RAKVRroom.cs" />
     <Compile Include="Assets\Scripts\Tags.cs" />
-    <Compile Include="Assets\Scripts\Things\ResourceTree.cs" />
     <Compile Include="Assets\Scripts\Util\Util.cs" />
     <Compile Include="Assets\Scripts\ViewFollow.cs" />
     <Compile Include="Assets\Scripts\Wander.cs" />

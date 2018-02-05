@@ -41,6 +41,7 @@ namespace rak.being
             children = new Being[0];
             alive = true;
             age = 0;
+            currentSize = (float)(age * growthToAgeRatio) + minSize;
         }
 
         public void addParent(Being newParent)
@@ -119,7 +120,8 @@ namespace rak.being
         {
             return currentSize;
         }
-        public float getNavMeshAgentSpeed()
+        public float getNavMeshAgent
+            ()
         {
             return navMeshAgentSpeed;
         }

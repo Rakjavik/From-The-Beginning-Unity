@@ -89,6 +89,10 @@ namespace rak.util
                     }
                 }
             }
+            if(closest == null)
+            {
+                return null;
+            }
             return closest;
         }
     }

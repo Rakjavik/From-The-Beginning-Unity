@@ -32,7 +32,8 @@
             {
                 Species being = focus.getBeing();
                 StringBuilder builder = new StringBuilder("");
-                builder.AppendLine("---Parents---");
+                builder.Append(focus.getBeing().getName() + "\n");
+                builder.Append("---Parents---\n");
                 if (being.getParents() != null)
                 {
                     foreach (Being parent in being.getParents())
@@ -51,11 +52,10 @@
                             builder.AppendLine(child.getName());
                         } else
                         {
-                            builder.Append("");
+                            builder.Append("\n");
                         }
                     }
 
-                    builder.AppendLine("Name - " + being.getName());
                     builder.AppendLine("Gender - " + being.getGender());
                     builder.AppendLine("Age - " + Util.numbersAfterDecimal(being.getAge(), 3));
                     builder.AppendLine("Species - " + being.getSpeciesName());

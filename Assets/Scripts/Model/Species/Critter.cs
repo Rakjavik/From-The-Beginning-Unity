@@ -11,7 +11,7 @@ namespace rak.being.species.critter
             this.gameObject = gameObject;
 
             // Species Specific //
-            speciesSocialAspects = new SocialAspects(0, 0, 0, 0,0);
+            speciesSocialAspects = new SocialAspects(0, 0, 0, 0,1);
             speciesName = "Critter";
             gestationType = 'l'; // Live birth
             gestationTime = 5;
@@ -24,15 +24,9 @@ namespace rak.being.species.critter
             currentSize = minSize;
             navMeshAgentSpeed = 1.5f;
             name = Util.getRandomString("Critter") + " " + name;
-            if (parents == null)
+            if (parents != null)
             {
-                
-            } else
-            {
-                foreach(Critter critter in parents)
-                {
-                    addParent(critter);
-                }
+                this.parents = parents;
             }
         }
     }

@@ -24,6 +24,7 @@
         public bool DEBUG_DISABLE_RESOURCE_COLLECTION;
 
         private Task currentTask;
+        protected bool initialized = false;
 
         public GameObject room; // Current room of the agent
         public GameObject viewToMoveTo; // Main Camera for when agent is selected
@@ -80,9 +81,6 @@
 
             // The job's target //
             GameObject target = null;
-            //if (currentJob.getTargetType() != Job.TargetType.None && !currentJob.hasTarget()) {
-                //target = currentJob.getNewTarget(transform);
-            //}
             if (currentJob.hasTarget())
             {
                 target = currentJob.getTarget();
@@ -111,6 +109,10 @@
                             item.transform.SetParent(target.transform);
                             inventory.removeItem(item);
                             jobQueue.completeCurrentJob(currentTask);
+                        }
+                        else
+                        {
+                            debug("Problem dropping off item for - " + getBeing().getName());
                         }
                     }
                     else if (currentJob.isThisType(Job.JobType.PickUp))
@@ -288,6 +290,10 @@
         public Inventory getInventory()
         {
             return inventory;
+        }
+        public void setInitialized(bool initialized)
+        {
+            this.initialized = initialized;
         }
     }
 }

@@ -20,7 +20,12 @@
         // Use this for initialization
         void Start()
         {
-            initializeAgent();
+            if (!initialized)
+            {
+                initializeBeing(this, gameObject, 'n', Util.getRandomString("Critter"), null);
+                initializeAgent();
+                initialized = true;
+            }
         }
 
         public new void initializeAgent()
@@ -29,7 +34,7 @@
             base.initializeAgent();
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
             floorYPosition = yFloorPositionToScaleRatio;
-            Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject, null);
+            Critter myBeing = (Critter)getBeing();
             distanceToTargetValidRatio = 5.0f;
             yFloorPositionToScaleRatio = -2.1f;
             distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
@@ -53,10 +58,6 @@
         private void updateViewScreen()
         {
             StringBuilder stringBuilder = new StringBuilder("--Name--\n").AppendLine(getBeing().getName()).AppendLine("--Current Job--");
-            /*foreach (GameObject item in inventory.getItems())
-            {
-                stringBuilder.AppendLine(item.name);
-            }*/
             stringBuilder.AppendLine(getCurrentTask().getTaskName());
             stringBuilder.AppendLine("--Target--");
             if (jobQueue.getCurrentJobTarget() != null)
@@ -84,7 +85,7 @@
             }
         }
 
-        private void initializeChildBeing(CritterAgent child, GameObject gameObject,char gender,string name,Critter[] parents)
+        private void initializeBeing(CritterAgent child, GameObject gameObject,char gender,string name,Critter[] parents)
         {
             Critter childCritter = new Critter(name, gender, gameObject,parents);
             child.setBeing(childCritter);
@@ -95,9 +96,9 @@
             being.birth();
             CritterAgent child = Object.Instantiate(this, this.transform.parent,true);
             child.transform.position = transform.position;
-            initializeChildBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
+            initializeBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
             child.initializeAgent();
-
+            child.setInitialized(true);
             Material childMaterial;
             if (Time.time % 2 <= 1)
             {
@@ -106,11 +107,10 @@
             {
                 childMaterial = critterMaterials[1];
             }
-            GetComponentInChildren<Renderer>().material = childMaterial;
+            child.GetComponentInChildren<Renderer>().material = childMaterial;
             
             being.addChild(child.getBeing());
             NavMeshAgent agent = child.GetComponent<NavMeshAgent>();
-            agent.speed = child.getBeing().getNavMeshAgentSpeed();
             Debug.Log(child.getBeing().getName());
         }
     }
