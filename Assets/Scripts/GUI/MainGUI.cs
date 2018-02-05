@@ -60,6 +60,11 @@
                     builder.AppendLine("Age - " + Util.numbersAfterDecimal(being.getAge(), 3));
                     builder.AppendLine("Species - " + being.getSpeciesName());
                     builder.AppendLine("Time preggers - " + being.getTimePregnanant());
+                    builder.Append("Body parts detached - ");
+                    foreach(BodyPart part in focus.getBeing().getPhysicalBeing().getBody().getDetachedParts())
+                    {
+                        builder.Append(part.getName() + " ");
+                    }
                     text.text = builder.ToString();
                 }
             }

@@ -5,6 +5,8 @@ namespace rak.being.species
 
     public class Species : Being
     {
+        protected BodyPart[] partsList;
+
         protected SocialAspects speciesSocialAspects;
 
         protected GameObject gameObject;
@@ -13,6 +15,7 @@ namespace rak.being.species
         protected double timePregnant;
         protected double gestationTime;
         protected char gestationType;
+        
 
         protected bool waitingToGiveBirth = false;
 
@@ -72,6 +75,10 @@ namespace rak.being.species
         public SocialAspects getSocialAspects()
         {
             return speciesSocialAspects;
+        }
+        public BodyPart[] getPartsList()
+        {
+            return partsList;
         }
     }
 }

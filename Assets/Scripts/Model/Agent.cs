@@ -4,12 +4,11 @@
     using UnityEngine;
     using UnityEngine.UI;
     using UnityEngine.AI;
-    using System.Collections.Generic;
     using rak.work.tasks;
     using rak.unity.baseobject;
     using rak.being.species;
-    using rak.being.species.critter;
     using rak.work.job;
+    using rak.being;
 
     // Base agent class //
     public class Agent : MonoBehaviour
@@ -22,6 +21,7 @@
         public bool DEBUG_RESOURCES_PERMANENT; // Agent does not deplete resources when picking up
         public bool DEBUG_CRITTER;
         public bool DEBUG_DISABLE_RESOURCE_COLLECTION;
+        public bool DEBUG_DISABLED_VIEWSCREEN;
 
         private Task currentTask;
         protected bool initialized = false;
@@ -41,6 +41,8 @@
         protected JobQueue jobQueue; // Job queue
         protected float distanceToTargetValidRatio;
         protected float yFloorPositionToScaleRatio;
+
+        private float lastClickTime = 0;
 
         // Use this for initialization
         void Start()
@@ -62,10 +64,13 @@
             collider = GetComponentInChildren<Collider>();
             jobQueue = new JobQueue(this);
             currentTask = jobQueue.getNextTask();
+            initializeBodyParts();
         }
         // Update is called once per frame
         protected void Update()
         {
+            lastClickTime += Time.deltaTime;
+
             // Make sure agent is not moving if it selected //
             if(selected)
             {
@@ -95,6 +100,7 @@
                 
                 // Get distance from agent to target //
                 float magnitude = (transform.position - target.transform.position).magnitude;
+                debug("MAGNITUDE - " + magnitude + " DISTANCE TO TARGET VALID - " + distanceToTargetValid);
                 // If agent is close enough to be considered at arrived //
                 if (magnitude < distanceToTargetValid)
                 {
@@ -142,7 +148,6 @@
             {
                 jobQueue.completeCurrentJob(currentTask);
             }
-            // Object needs a target but is not active on the nav mesh, and is not selected //
             // Object has just been released and is falling toward the ground //
             if (!agent.isActiveAndEnabled)
             {
@@ -197,9 +202,10 @@
                     this.selected = true;
                     roomObject.setSelection(this);
                     agent.enabled = false;
-                    collider.attachedRigidbody.transform.position = viewToMoveTo.transform.position + viewToMoveTo.transform.forward * 1;
+                    collider.attachedRigidbody.transform.position = viewToMoveTo.transform.position + viewToMoveTo.transform.forward * 1.5f;
                     collider.attachedRigidbody.useGravity = false;
                     collider.attachedRigidbody.Sleep();
+                    collider.attachedRigidbody.isKinematic = true;
                     collider.attachedRigidbody.velocity = Vector3.zero;
                     agent.velocity = Vector3.zero;
                     //collider.attachedRigidbody.angularVelocity = new Vector3(90, 90, 90) * .5f;
@@ -225,6 +231,7 @@
                     collider.attachedRigidbody.WakeUp();
                     //roomObject.toggleWaitingOnObjectMovement();
                     collider.attachedRigidbody.angularVelocity = Vector3.zero;
+                    collider.attachedRigidbody.isKinematic = false;
                     if (roomObject.doDisplayPersonalViewScreens())
                     {
                         viewScreen.enabled = true;
@@ -241,11 +248,22 @@
             }
             else if(Input.GetMouseButton(1))
             {
-                being.inpregnate();
+
+                if (lastClickTime > 1)
+                {
+                    lastClickTime = 0;
+                    //being.inpregnate();
+                    int randomNumber = Random.Range(0, being.getPhysicalBeing().getBody().getBodyParts().Length);
+                    if (isSelected())
+                    {
+                        being.getPhysicalBeing().getBody().getBodyParts()[randomNumber].removeBodyPart(true);
+                    } else
+                    {
+                        being.getPhysicalBeing().getBody().getBodyParts()[randomNumber].removeBodyPart(false);
+                    }
+                }
             }
         }
-
-        
 
         protected void debug(string message)
         {
@@ -279,8 +297,8 @@
                 transform.GetChild(0).localScale = new Vector3(currentSize, currentSize, currentSize);
                 distanceToTargetValid = currentSize * distanceToTargetValidRatio;
                 floorYPosition = currentSize * yFloorPositionToScaleRatio;
-                //debug(floorYPosition.ToString());
             }
+
         }
 
         protected void setDEBUG(bool debug)
@@ -295,5 +313,41 @@
         {
             this.initialized = initialized;
         }
+        
+        private void initializeBodyParts()
+        {
+            BodyPart[] parts = being.getPartsList();
+            Transform agentMeshs = transform.Find("Figure").Find("DisectedCritter").Find("Meshs");
+            for (int count = 0; count < agentMeshs.childCount; count++)
+            {
+                RAKBodyPart rAK = agentMeshs.GetChild(count).GetComponent<RAKBodyPart>();
+                if (rAK != null)
+                {
+                    bool found = false;
+                    string assignedPart = rAK.getBodyPartName();
+                    assignedPart = assignedPart.ToLower().Replace(" ", "");
+                    for(int singlePartCount = 0; singlePartCount < parts.Length; singlePartCount++)
+                    {
+                        string bodyPartName = parts[singlePartCount].getName().ToLower().Replace(" ", "");
+                        if (bodyPartName == assignedPart)
+                        {
+                            rAK.setBodyPart(parts[singlePartCount]);
+                            parts[singlePartCount].addBodyPartGameObject(rAK);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        Debug.LogWarning(assignedPart + " not found when assigning body part for mesh - " + rAK.gameObject.name);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning(agentMeshs.GetChild(count).name + " Does not have a Body Part Script!");
+                }
+            }
+        }
+
     }
 }

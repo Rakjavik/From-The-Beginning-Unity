@@ -12,6 +12,7 @@ public class RAKVRroom : MonoBehaviour{
 
     private Agent selection; // Object that is currently selected/focused
     private bool waitingOnObjectMovement; // Room is waiting for dropped agent to land on floor and reinitialize.
+    
 
 	// Use this for initialization
 	void Start () {

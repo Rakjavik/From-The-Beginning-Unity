@@ -8,6 +8,7 @@ namespace rak.being
 {
     public class Being
     {
+        protected PhysicalBeing physicalBeing;
         protected bool alive;
         protected double age;
         protected string name;
@@ -120,10 +121,14 @@ namespace rak.being
         {
             return currentSize;
         }
-        public float getNavMeshAgent
-            ()
+        public float getNavMeshAgent()
         {
             return navMeshAgentSpeed;
         }
+        public PhysicalBeing getPhysicalBeing()
+        {
+            return physicalBeing;
+        }
+
     }
 }

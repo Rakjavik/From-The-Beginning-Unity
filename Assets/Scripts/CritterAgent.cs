@@ -35,7 +35,7 @@
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
             floorYPosition = yFloorPositionToScaleRatio;
             Critter myBeing = (Critter)getBeing();
-            distanceToTargetValidRatio = 5.0f;
+            distanceToTargetValidRatio = 10.0f;
             yFloorPositionToScaleRatio = -2.1f;
             distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
             setBeing(myBeing);
@@ -44,14 +44,21 @@
 
             critterMaterials[0] = (Material)Resources.Load("Materials/lava_001");
             critterMaterials[1] = (Material)Resources.Load("Materials/lava_002");
+            if(DEBUG_DISABLED_VIEWSCREEN)
+            {
+                viewScreen.text = "";
+            }
         }
 
         // Update is called once per frame
         new void Update()
         {
             base.Update();
-            // Viewscreen update //
-            updateViewScreen();
+            if (!DEBUG_DISABLED_VIEWSCREEN)
+            {
+                // Viewscreen update //
+                updateViewScreen();
+            }
             beingUpdates();
         }
 
