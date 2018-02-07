@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NobleMuffins.LimbHacker.Guts;
+using rak.being.species.critter;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace rak.being
@@ -21,6 +23,7 @@ namespace rak.being
     public class Body
     {
         private BodyPart[] bodyParts;
+        private GameObject gameObject;
 
         public Body(BodyPart[] partsList)
         {
@@ -30,12 +33,12 @@ namespace rak.being
         {
             return bodyParts;
         }
-        public BodyPart[] getDetachedParts()
+        public BodyPart[] getParts(bool attached)
         {
             List<BodyPart> bodyPartList = new List<BodyPart>();
             foreach (BodyPart part in bodyParts)
             {
-                if(!part.isAttached())
+                if(part.isAttached() == attached)
                 {
                     bodyPartList.Add(part);
                 }
@@ -48,7 +51,6 @@ namespace rak.being
     {
         private string name;
         private bool attached;
-        private List<RAKBodyPart> bodyPartGameObject;
         private BodyPart parent;
         private List<BodyPart> children;
 
@@ -57,7 +59,6 @@ namespace rak.being
             this.name = name;
             this.parent = parent;
             attached = true;
-            bodyPartGameObject = new List<RAKBodyPart>();
         }
 
         public void addChild(BodyPart child)
@@ -65,13 +66,11 @@ namespace rak.being
             children.Add(child);
         }
 
-        public void removeBodyPart(bool freezeLimbs)
+        public void removeBodyPart(GameObject gameObject)
         {
-            for(int count = 0; count < bodyPartGameObject.Count; count++)
-            {
-                bodyPartGameObject[count].detach(freezeLimbs);
-            }
             attached = false;
+            LimbHackerAgent.instance.SeverByJoint(gameObject, name, 0.0f, null);
+            gameObject.GetComponent<CritterAgent>().lastSevered = this;
         }
 
         public string getName()
@@ -81,10 +80,6 @@ namespace rak.being
         public bool isAttached()
         {
             return attached;
-        }
-        public void addBodyPartGameObject(RAKBodyPart bodyPart)
-        {
-            bodyPartGameObject.Add(bodyPart);
         }
     }
 }

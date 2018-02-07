@@ -9,6 +9,7 @@
     using rak.being.species;
     using rak.work.job;
     using rak.being;
+    using NobleMuffins.LimbHacker.Guts;
 
     // Base agent class //
     public class Agent : MonoBehaviour
@@ -44,10 +45,12 @@
 
         private float lastClickTime = 0;
 
+
         // Use this for initialization
         void Start()
         {
             initializeAgent();
+            initialized = true;
         }
         // Initialize componenets //
         public void initializeAgent()
@@ -64,7 +67,6 @@
             collider = GetComponentInChildren<Collider>();
             jobQueue = new JobQueue(this);
             currentTask = jobQueue.getNextTask();
-            initializeBodyParts();
         }
         // Update is called once per frame
         protected void Update()
@@ -128,6 +130,10 @@
                         if (inventory.addItem(target))
                         {
                             target.transform.SetParent(this.transform);
+                            target.transform.position = this.transform.position + Vector3.forward * being.getCurrentSize() + Vector3.right * .1f;
+                            target.transform.rotation = this.transform.rotation;
+                            target.GetComponent<Collider>().enabled = false;
+                            target.GetComponent<Rigidbody>().isKinematic = true;
                             
                             // Item added, clear target //
                             if (!DEBUG_RESOURCES_PERMANENT)
@@ -142,6 +148,11 @@
                             jobQueue.completeCurrentJob(currentTask);
                         }
                     }
+                }
+                // Too far away, cancel target //
+                else if (magnitude > 20)
+                {
+                    currentTask.markComplete();
                 }
             }
             if(currentTask.isThisTask(Tasks.TaskType.IDLE))
@@ -202,7 +213,7 @@
                     this.selected = true;
                     roomObject.setSelection(this);
                     agent.enabled = false;
-                    collider.attachedRigidbody.transform.position = viewToMoveTo.transform.position + viewToMoveTo.transform.forward * 1.5f;
+                    collider.attachedRigidbody.transform.position = viewToMoveTo.transform.position + viewToMoveTo.transform.forward * .5f;
                     collider.attachedRigidbody.useGravity = false;
                     collider.attachedRigidbody.Sleep();
                     collider.attachedRigidbody.isKinematic = true;
@@ -240,6 +251,7 @@
             }
         }
 
+        // MOUSE CLICK //
         void OnMouseOver()
         {
             if (Input.GetMouseButtonDown(0))
@@ -253,14 +265,7 @@
                 {
                     lastClickTime = 0;
                     //being.inpregnate();
-                    int randomNumber = Random.Range(0, being.getPhysicalBeing().getBody().getBodyParts().Length);
-                    if (isSelected())
-                    {
-                        being.getPhysicalBeing().getBody().getBodyParts()[randomNumber].removeBodyPart(true);
-                    } else
-                    {
-                        being.getPhysicalBeing().getBody().getBodyParts()[randomNumber].removeBodyPart(false);
-                    }
+                    being.getPhysicalBeing().getBody().getParts(true)[7].removeBodyPart(gameObject);
                 }
             }
         }
@@ -271,6 +276,11 @@
             {
                 Debug.Log(message);
             }
+        }
+
+        protected void debugVerbose(string message)
+        {
+            Debug.Log(message);
         }
 
         public bool isSelected()
@@ -292,9 +302,9 @@
             }
             float currentSize = being.getCurrentSize();
             // Did size change //
-            if (transform.GetChild(0).localScale.x != currentSize)
+            if (transform.Find("Figure").localScale.x != currentSize)
             {
-                transform.GetChild(0).localScale = new Vector3(currentSize, currentSize, currentSize);
+                transform.Find("Figure").localScale = new Vector3(currentSize, currentSize, currentSize);
                 distanceToTargetValid = currentSize * distanceToTargetValidRatio;
                 floorYPosition = currentSize * yFloorPositionToScaleRatio;
             }
@@ -314,40 +324,5 @@
             this.initialized = initialized;
         }
         
-        private void initializeBodyParts()
-        {
-            BodyPart[] parts = being.getPartsList();
-            Transform agentMeshs = transform.Find("Figure").Find("DisectedCritter").Find("Meshs");
-            for (int count = 0; count < agentMeshs.childCount; count++)
-            {
-                RAKBodyPart rAK = agentMeshs.GetChild(count).GetComponent<RAKBodyPart>();
-                if (rAK != null)
-                {
-                    bool found = false;
-                    string assignedPart = rAK.getBodyPartName();
-                    assignedPart = assignedPart.ToLower().Replace(" ", "");
-                    for(int singlePartCount = 0; singlePartCount < parts.Length; singlePartCount++)
-                    {
-                        string bodyPartName = parts[singlePartCount].getName().ToLower().Replace(" ", "");
-                        if (bodyPartName == assignedPart)
-                        {
-                            rAK.setBodyPart(parts[singlePartCount]);
-                            parts[singlePartCount].addBodyPartGameObject(rAK);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        Debug.LogWarning(assignedPart + " not found when assigning body part for mesh - " + rAK.gameObject.name);
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning(agentMeshs.GetChild(count).name + " Does not have a Body Part Script!");
-                }
-            }
-        }
-
     }
 }

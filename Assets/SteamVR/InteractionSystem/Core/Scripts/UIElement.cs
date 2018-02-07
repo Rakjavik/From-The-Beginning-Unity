@@ -25,7 +25,7 @@ namespace Valve.VR.InteractionSystem
 			Button button = GetComponent<Button>();
 			if ( button )
 			{
-				button.onClick.AddListener( OnButtonClick );
+				//button.onClick.AddListener( OnButtonClick );
 			}
 		}
 

@@ -30,7 +30,7 @@ namespace rak.util
 
         private static string[] parseList()
         {
-            string List = System.IO.File.ReadAllText("C:/Users/Public/Documents/Unity Projects/From The Beginning/Assets/misc/Text/CritterLast.txt");
+            string List = System.IO.File.ReadAllText("C:/Users/Public/Documents/Unity Projects/From The Beginning/Assets/Scripts/misc/Text/CritterLast.txt");
             List<string> arrayList = new List<string>();
             foreach (string entry in List.Split(' '))
             {
@@ -54,7 +54,7 @@ namespace rak.util
             GameObject[] gos;
             gos = GameObject.FindGameObjectsWithTag(tag);
             GameObject closest = null;
-            float distance = Mathf.Infinity; // Any distance
+            float distance = Mathf.Infinity;
             Vector3 position = transform.position;
             
             foreach (GameObject go in gos)

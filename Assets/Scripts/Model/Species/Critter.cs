@@ -20,8 +20,8 @@ namespace rak.being.species.critter
             canBePregnant = true;
             maxAge = 1000;
             growthToAgeRatio = .001;
-            stopGrowingAt = 100;
-            minSize = .1f;
+            stopGrowingAt = 60;
+            minSize = .2f;
             currentSize = minSize;
             navMeshAgentSpeed = 1.5f;
             name = Util.getRandomString("Critter") + " " + name;
@@ -32,17 +32,17 @@ namespace rak.being.species.critter
             BodyPart body = new BodyPart("Body",null);
             BodyPart head = new BodyPart("Head", body);
 
-            BodyPart leftFrontLeg = new BodyPart("Left Front Leg", body);
-            BodyPart leftFrontFoot = new BodyPart("Left Front Foot", leftFrontLeg);
+            BodyPart leftFrontLeg = new BodyPart("LeftArm", body);
+            BodyPart leftFrontFoot = new BodyPart("LeftHand", leftFrontLeg);
 
-            BodyPart rightFrontLeg = new BodyPart("Right Front Leg", body);
-            BodyPart rightFrontFoot = new BodyPart("Right Front Foot", rightFrontLeg);
+            BodyPart rightFrontLeg = new BodyPart("RightArm", body);
+            BodyPart rightFrontFoot = new BodyPart("RightHand", rightFrontLeg);
 
-            BodyPart leftBackLeg = new BodyPart("Left Back Leg", body);
-            BodyPart leftBackFoot = new BodyPart("Left Back Foot", leftBackLeg);
+            BodyPart leftBackLeg = new BodyPart("LeftLeg", body);
+            BodyPart leftBackFoot = new BodyPart("LeftFoot", leftBackLeg);
 
-            BodyPart rightBackLeg = new BodyPart("Right Back Leg", body);
-            BodyPart rightBackFoot = new BodyPart("Right Back Foot", rightBackLeg);
+            BodyPart rightBackLeg = new BodyPart("RightLeg", body);
+            BodyPart rightBackFoot = new BodyPart("RightFoot", rightBackLeg);
 
             List<BodyPart> newList = new List<BodyPart>();
             newList.Add(body);

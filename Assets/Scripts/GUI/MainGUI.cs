@@ -61,7 +61,7 @@
                     builder.AppendLine("Species - " + being.getSpeciesName());
                     builder.AppendLine("Time preggers - " + being.getTimePregnanant());
                     builder.Append("Body parts detached - ");
-                    foreach(BodyPart part in focus.getBeing().getPhysicalBeing().getBody().getDetachedParts())
+                    foreach (BodyPart part in focus.getBeing().getPhysicalBeing().getBody().getParts(false))
                     {
                         builder.Append(part.getName() + " ");
                     }
