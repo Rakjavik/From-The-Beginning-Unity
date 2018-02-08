@@ -5,22 +5,28 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
+public interface Item
+{
+    string getName();
+    GameObject getGameObject();
+}
+
 public class Inventory
 {
     private GameObject owner;
-    private List<GameObject> items;
+    private List<Item> items;
     private int maxSize;
     
 
 
    public Inventory(int maxSize,GameObject owner)
     {
-        items = new List<GameObject>();
+        items = new List<Item>();
         this.maxSize = maxSize;
         this.owner = owner;
     }
 
-    public bool addItem(GameObject item)
+    public bool addItem(Item item)
     {
         if (hasEmptySpace())
         {
@@ -28,16 +34,16 @@ public class Inventory
             return true;
         } else
         {
-            Debug.Log(owner.name + " tries to pick up " + item.name + ", but is full!");
+            Debug.Log(owner.name + " tries to pick up " + item.getName() + ", but is full!");
             return false;
         }
     }
-    public void removeItem(GameObject item)
+    public void removeItem(Item item)
     {
         items.Remove(item);
     }
 
-    public List<GameObject> getItems()
+    public List<Item> getItems()
     {
         return items;
     }
@@ -47,9 +53,9 @@ public class Inventory
         if (toConsole)
         {
             Debug.Log("INVENTORY:");
-            foreach (GameObject item in items)
+            foreach (Item item in items)
             {
-                Debug.Log(item.name);
+                Debug.Log(item.getName());
             }
             Debug.Log("THAT'S IT");
         }
@@ -65,7 +71,7 @@ public class Inventory
         return false;
     }
 
-    public GameObject get(int index)
+    public Item get(int index)
     {
        return items[index];
     }

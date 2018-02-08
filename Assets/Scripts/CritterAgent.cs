@@ -1,30 +1,20 @@
 ﻿namespace rak.being.species.critter
 {
-    using NobleMuffins.LimbHacker;
-    using NobleMuffins.LimbHacker.Guts;
     using rak.unity;
-    using rak.unity.baseobject;
     using rak.util;
-    using rak.work.tasks;
-    using System.Collections;
-    using System.Collections.Generic;
     using System.Text;
     using UnityEngine;
-    using UnityEngine.AI;
-    using UnityEngine.UI;
 
-    public class CritterAgent : Agent
+    public class CritterAgent : Agent, AgentInterface
     {
 
-        public static float changeScaleEvery = .05f;
-        public static Material[] critterMaterials;
+        public static float changeScaleEvery = .05f; // Scale has to change this much before it is updated on screen
+        public static Material[] critterMaterials; // Different materials Critter can use
 
 
-        public BodyPart lastSevered = null;
-        private ForwardPassAgent childOfHackable;
-        private float timeDetached = 0;
-        private GameObject figure; // Conv object
+        
 
+        // Pulls in the last severed body part and removes it from this object, this is called from a body part to get it's assignment
         public BodyPart consumeLastSevered()
         {
             BodyPart bodyPart = lastSevered;
@@ -36,45 +26,20 @@
         // Use this for initialization
         void Start()
         {
-            figure = transform.Find("Figure").gameObject;
-            childOfHackable = GetComponent<ForwardPassAgent>();
-            if (!initialized && childOfHackable == null)
-            {
-                initializeBeing(this, gameObject, 'n', Util.getRandomString("Critter"), null);
-                initializeAgent();
-                initialized = true;
-
-                birth();
-                birth();
-                birth();
-            }
-            // This is a body part //
-            else if (childOfHackable != null)
-            {
-                debug(name);
-                gameObject.SetActive(false);
-                gameObject.SetActive(true);
-                GameObject figure = transform.Find("Figure").gameObject;
-                GameObject hackedOffMesh = figure.transform.GetChild(1).gameObject;
-                hackedOffMesh.name = "HackedOffLimb";
-                //hackedOffMesh.GetComponentInParent<Rigidbody>().isKinematic = true;
-                //hackedOffMesh.AddComponent<Rigidbody>();
-                hackedOffMesh.GetComponentInParent<Collider>().enabled = false;
-                hackedOffMesh.GetComponentInParent<Agent>().enabled = false;
-                hackedOffMesh.GetComponentInParent<NavMeshAgent>().enabled = false;
-                hackedOffMesh.GetComponentInParent<Hackable>().enabled = false;
-                hackedOffMesh.GetComponent<SkinnedMeshRenderer>().sharedMesh.RecalculateBounds();
-                BoxCollider collider = hackedOffMesh.AddComponent<BoxCollider>();
-                hackedOffMesh.SetActive(true);
-                hackedOffMesh.transform.parent.gameObject.SetActive(true);
-                figure.SetActive(true);
-                gameObject.SetActive(true);
-            }
+            base.initializeAgent(); // Super
+            inventory = new Inventory(1, gameObject);
+            debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
+            floorYPosition = yFloorPositionToScaleRatio;
+            Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject, null);
+            distanceToTargetValidRatio = 2.0f;
+            distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
+            setBeing(myBeing);
         }
         private void OnDestroy()
         {
             Debug.Log("Destorying object - " + transform.name);
         }
+        // Initializes the nav mesh agent aspect
         public new void initializeAgent()
         {
             inventory = new Inventory(1, gameObject);
@@ -100,18 +65,7 @@
         // Update is called once per frame
         new void Update()
         {
-            if(childOfHackable != null)
-            {
-                GetComponent<Rigidbody>().velocity = Vector3.zero;
-                GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-                timeDetached += Time.deltaTime;
-                debugVerbose("Time detached - " + timeDetached);
-                if (timeDetached > 10)
-                {
-                    Destroy(gameObject);
-                }
-                return;
-            }
+            
             base.Update();
             if (!DEBUG_DISABLED_VIEWSCREEN)
             {
@@ -143,7 +97,8 @@
             being.ageBeing(Time.deltaTime,changeScaleEvery);
             if (gameObject.transform.position.y <= floorYPosition && being.isWaitingToGiveBirth())
             {
-                birth();
+                AgentInterface ai = this;
+                ai.birth();
             }
             if (being.isPregnant())
             {
@@ -151,18 +106,19 @@
             }
         }
 
-        private void initializeBeing(CritterAgent child, GameObject gameObject,char gender,string name,Critter[] parents)
+        void AgentInterface.initializeBeing(Agent child, GameObject gameObject,char gender,string name,IntelligentSpecies[] parents)
         {
-            Critter childCritter = new Critter(name, gender, gameObject,parents);
+            Critter childCritter = new Critter(name, gender, gameObject,(Critter[])parents);
             child.setBeing(childCritter);
         }
 
-        protected void birth()
+        void AgentInterface.birth()
         {
             being.birth();
             CritterAgent child = Object.Instantiate(this, this.transform.parent,true);
             child.transform.position = transform.position;
-            initializeBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
+            AgentInterface ai = this;
+            ai.initializeBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
             child.initializeAgent();
             child.setInitialized(true);
             Material childMaterial;

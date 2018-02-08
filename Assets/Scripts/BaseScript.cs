@@ -34,7 +34,7 @@
             viewScreen.text = stringBuilder.ToString();
         }
 
-        public bool addItem(GameObject item)
+        public bool addItem(Item item)
         {
             bool response = inventory.addItem(item);
             return response;

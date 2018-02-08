@@ -30,7 +30,7 @@
         {
             if(focus != null)
             {
-                Species being = focus.getBeing();
+                IntelligentSpecies being = focus.getBeing();
                 StringBuilder builder = new StringBuilder("");
                 builder.Append(focus.getBeing().getName() + "\n");
                 builder.Append("---Parents---\n");

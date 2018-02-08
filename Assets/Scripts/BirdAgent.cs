@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace rak.unity
 {
-    public class BirdAgent : Agent
+    public class BirdAgent : Agent, AgentInterface
     {
         public static float changeScaleEvery = .05f;
 
@@ -17,7 +17,7 @@ namespace rak.unity
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
             floorYPosition = yFloorPositionToScaleRatio;
             Bird myBeing = new Bird(Util.getRandomString("Phoenix"), 'r', gameObject, null);
-            distanceToTargetValidRatio = 10.0f;
+            distanceToTargetValidRatio = 3.0f;
             distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
             setBeing(myBeing);
         }
@@ -59,6 +59,16 @@ namespace rak.unity
             {
                 being.progressPregnany(Time.deltaTime);
             }
+        }
+        void AgentInterface.initializeBeing(Agent child, GameObject gameObject, char gender, string name, IntelligentSpecies[] parents)
+        {
+            Bird childCritter = new Bird(name, gender, gameObject,(Bird[])parents);
+            child.setBeing((Bird)childCritter);
+        }
+
+        void AgentInterface.birth()
+        {
+            
         }
     }
 }

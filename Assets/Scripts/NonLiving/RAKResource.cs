@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RAKResource : MonoBehaviour {
+public class RAKResource : MonoBehaviour,Item {
 
     public bool claimed = false;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public Item getAsItem()
+    {
+        return (Item) this;
+    }
+
+    public GameObject getGameObject()
+    {
+        return this.gameObject;
+    }
+
+    public string getName()
+    {
+        return "Resource";
+    }
 
     public bool isClaimed()
     {

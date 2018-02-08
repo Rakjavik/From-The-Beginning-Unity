@@ -3,7 +3,7 @@
 namespace rak.being.species
 {
 
-    public class Species : Being
+    public class IntelligentSpecies : Being
     {
         protected BodyPart[] partsList;
 
@@ -19,7 +19,7 @@ namespace rak.being.species
 
         protected bool waitingToGiveBirth = false;
 
-        protected Species(string name,char gender,GameObject gameObject) : base(name,gender)
+        protected IntelligentSpecies(string name,char gender,GameObject gameObject) : base(name,gender)
         {
             timePregnant = 0;
         }

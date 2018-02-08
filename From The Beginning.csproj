@@ -342,6 +342,7 @@
     <Compile Include="Assets\Scripts\misc\Tags.cs" />
     <Compile Include="Assets\Scripts\Model\Agent.cs" />
     <Compile Include="Assets\Scripts\Model\Being.cs" />
+    <Compile Include="Assets\Scripts\Model\equipment\Equipment.cs" />
     <Compile Include="Assets\Scripts\Model\Inventory.cs" />
     <Compile Include="Assets\Scripts\Model\psyche\Psyche.cs" />
     <Compile Include="Assets\Scripts\Model\RAKVRroom.cs" />
@@ -358,14 +359,6 @@
     <Compile Include="Assets\Scripts\Model\tasks\Tasks.cs" />
     <Compile Include="Assets\Scripts\NonLiving\RAKResource.cs" />
     <Compile Include="Assets\Scripts\NonLiving\ResourceTree.cs" />
-    <Compile Include="Assets\Scripts\Slice\Framework\IntersectionResult.cs" />
-    <Compile Include="Assets\Scripts\Slice\Framework\Intersector.cs" />
-    <Compile Include="Assets\Scripts\Slice\Framework\Line.cs" />
-    <Compile Include="Assets\Scripts\Slice\Framework\Plane.cs" />
-    <Compile Include="Assets\Scripts\Slice\Framework\Triangle.cs" />
-    <Compile Include="Assets\Scripts\Slice\Framework\Triangulator.cs" />
-    <Compile Include="Assets\Scripts\Slice\SlicedHull.cs" />
-    <Compile Include="Assets\Scripts\Slice\Slicer.cs" />
     <Compile Include="Assets\Scripts\Util\Util.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />

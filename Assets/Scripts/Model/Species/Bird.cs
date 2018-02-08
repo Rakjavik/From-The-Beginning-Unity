@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace rak.being.species
 {
-    public class Bird : Species
+    public class Bird : IntelligentSpecies
     {
         public Bird(string name, char gender, GameObject gameObject, Bird[] parents) : base(name, gender, gameObject)
         {
@@ -25,7 +25,7 @@ namespace rak.being.species
             maxAge = 86400;
             growthToAgeRatio = .0005;
             stopGrowingAt = 360;
-            minSize = .1f;
+            minSize = .3f;
             currentSize = minSize;
             navMeshAgentSpeed = 3.0f;
             name = Util.getRandomString("Phoenix") + " " + name;

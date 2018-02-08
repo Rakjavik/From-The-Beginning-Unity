@@ -49,14 +49,18 @@ namespace rak.being
 
     public class BodyPart
     {
+        public enum BodyPartLocation {BODY,HEAD,LEFTFRONTLEG,LEFTFRONTFOOT,RIGHTFRONTLEG,RIGHTFRONTFOOT,LEFTBACKLEG,LEFTBACKFOOT,RIGHTBACKLEG,RIGHTBACKFOOT}
+
         private string name;
         private bool attached;
         private BodyPart parent;
         private List<BodyPart> children;
+        private BodyPartLocation bodyPartLocation;
 
-        public BodyPart(string name,BodyPart parent)
+        public BodyPart(string name,BodyPartLocation bodyPartLocation,BodyPart parent)
         {
             this.name = name;
+            this.bodyPartLocation = bodyPartLocation;
             this.parent = parent;
             attached = true;
         }

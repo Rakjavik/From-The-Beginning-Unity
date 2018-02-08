@@ -10,22 +10,23 @@
     using rak.work.job;
     using rak.being;
     using NobleMuffins.LimbHacker.Guts;
+    using NobleMuffins.LimbHacker;
 
     // Base agent class //
     public class Agent : MonoBehaviour
     {
-        protected Species being;
+        protected IntelligentSpecies being;
 
         protected float floorYPosition; //Y position when agent is close to ground, Set in child object
         protected float distanceToTargetValid; //Distance from target object before it's considered close enough to touch, Set in child object
 
         public bool DEBUG_RESOURCES_PERMANENT; // Agent does not deplete resources when picking up
-        public bool DEBUG_CRITTER;
-        public bool DEBUG_DISABLE_RESOURCE_COLLECTION;
-        public bool DEBUG_DISABLED_VIEWSCREEN;
+        public bool DEBUG_CRITTER; // Display general debug for this agent
+        public bool DEBUG_DISABLE_RESOURCE_COLLECTION; // Don't collect resources
+        public bool DEBUG_DISABLED_VIEWSCREEN; // Keep the personal view screen blank
 
-        private Task currentTask;
-        protected bool initialized = false;
+        private Task currentTask; // Current active task for agent
+        protected bool initialized = false; // Whether the agent has been initialized
 
         public GameObject room; // Current room of the agent
         public GameObject viewToMoveTo; // Main Camera for when agent is selected
@@ -40,17 +41,53 @@
         protected Collider collider; // Collider
         //protected GameObject target; // Agent's movement destination
         protected JobQueue jobQueue; // Job queue
-        protected float distanceToTargetValidRatio;
-        protected float yFloorPositionToScaleRatio;
+        protected float distanceToTargetValidRatio; // Ratio between size of agent and distance before it is considered at it's destination
+        protected float yFloorPositionToScaleRatio; // Ration between size of agent and what is considered on the ground
 
-        private float lastClickTime = 0;
+        public BodyPart lastSevered = null; // The last severed body part, used for temporary storage so the severed part's thread can pick it up when created
+        private ForwardPassAgent childOfHackable; // A script that gets put on body parts when they are severed
+        private float timeDetached = 0; // Elapsed time the part has been detached from the body
+        private GameObject figure; // Conv object
+
+        private float lastClickTime = 0; // Last mouse click event
 
 
         // Use this for initialization
         void Start()
         {
-            initializeAgent();
-            initialized = true;
+            figure = transform.Find("Figure").gameObject; // Conv object
+            childOfHackable = GetComponent<ForwardPassAgent>(); // If present, this is a body part
+            if (!initialized && childOfHackable == null) // If it's NOT a body part and hasn't been initialized yet
+            {
+                initializeAgent();
+                initialized = true;
+                AgentInterface ai = (AgentInterface)this;
+                //ai.birth();
+                //ai.birth();
+                //ai.birth();
+            }
+            // This is a body part //
+            else if (childOfHackable != null)
+            {
+                debug(name);
+                // Toggle game object to disable children objects //
+                gameObject.SetActive(false);
+                gameObject.SetActive(true);
+                GameObject figure = transform.Find("Figure").gameObject;
+                GameObject hackedOffMesh = figure.transform.GetChild(1).gameObject;
+                hackedOffMesh.name = "HackedOffLimb";
+                // remove unneeded components //
+                hackedOffMesh.GetComponentInParent<Collider>().enabled = false;
+                hackedOffMesh.GetComponentInParent<Agent>().enabled = false;
+                hackedOffMesh.GetComponentInParent<NavMeshAgent>().enabled = false;
+                hackedOffMesh.GetComponentInParent<Hackable>().enabled = false;
+                // Add a new collider that will size to new mesh //
+                BoxCollider collider = hackedOffMesh.AddComponent<BoxCollider>();
+                hackedOffMesh.SetActive(true);
+                hackedOffMesh.transform.parent.gameObject.SetActive(true);
+                figure.SetActive(true);
+                gameObject.SetActive(true);
+            }
         }
         // Initialize componenets //
         public void initializeAgent()
@@ -73,8 +110,22 @@
         {
             lastClickTime += Time.deltaTime;
 
+            // This is a limb, not a full critter //
+            if (childOfHackable != null)
+            {
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
+                GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                timeDetached += Time.deltaTime;
+                debugVerbose("Time detached - " + timeDetached);
+                if (timeDetached > 10)
+                {
+                    Destroy(gameObject);
+                }
+                return;
+            }
+
             // Make sure agent is not moving if it selected //
-            if(selected)
+            if (selected)
             {
                 collider.attachedRigidbody.velocity = Vector3.zero;
             }
@@ -109,12 +160,14 @@
                     if (currentJob.isThisType(Job.JobType.DropOff))
                     {
                         debug("At dropoff site - " + target.name);
-                        GameObject item = inventory.get(0);
+                        Item item = inventory.get(0);
+
+                        GameObject itemGameObject = item.getGameObject();
                         if (target.GetComponent<BaseScript>().addItem(item))
                         {
-                            MeshRenderer renderer = item.GetComponent<MeshRenderer>();
+                            MeshRenderer renderer = itemGameObject.GetComponent<MeshRenderer>();
                             renderer.enabled = false;
-                            item.transform.SetParent(target.transform);
+                            itemGameObject.transform.SetParent(target.transform);
                             inventory.removeItem(item);
                             jobQueue.completeCurrentJob(currentTask);
                         }
@@ -127,7 +180,7 @@
                     {
                         debug("Picking up - " + target.name);
                         // Try to add item to inventory //
-                        if (inventory.addItem(target))
+                        if (inventory.addItem(target.GetComponent<RAKResource>().getAsItem()))
                         {
                             target.transform.SetParent(this.transform);
                             target.transform.position = this.transform.position + Vector3.forward * being.getCurrentSize() + Vector3.right * .1f;
@@ -177,12 +230,12 @@
             beingUpdates();
         }
 
-        protected void setBeing(Species being)
+        public void setBeing(IntelligentSpecies being)
         {
             this.being = being;
         }
 
-        public Species getBeing()
+        public IntelligentSpecies getBeing()
         {
             return being;
         }
@@ -324,5 +377,13 @@
             this.initialized = initialized;
         }
         
+    }
+
+    public interface AgentInterface
+    {
+        // Initialize a new Being
+        void initializeBeing(Agent child, GameObject gameObject, char gender, string name, IntelligentSpecies[] parents);
+        // Agent birthing //
+        void birth();
     }
 }
