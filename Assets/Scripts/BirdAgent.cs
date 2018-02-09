@@ -12,13 +12,14 @@ namespace rak.unity
         // Use this for initialization
         void Start()
         {
-            base.initializeAgent(); // Super
-            inventory = new Inventory(1, gameObject);
+            base.initializeBaseAgent(); // Super
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
+            inventory = new Inventory(50, gameObject);
             floorYPosition = yFloorPositionToScaleRatio;
             Bird myBeing = new Bird(Util.getRandomString("Phoenix"), 'r', gameObject, null);
             distanceToTargetValidRatio = 3.0f;
             distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
+            navMeshSpeedRatio = 1.2f;
             setBeing(myBeing);
         }
 
@@ -68,7 +69,15 @@ namespace rak.unity
 
         void AgentInterface.birth()
         {
-            
+            being.birth();
+            BirdAgent child = Object.Instantiate(this, this.transform.parent, true);
+            child.transform.position = transform.position;
+            AgentInterface ai = this;
+            ai.initializeBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Bird[] { (Bird)being });
+            child.initializeBaseAgent();
+            child.setInitialized(true);
+            being.addChild(child.getBeing());
+            Debug.Log(child.getBeing().getName());
         }
     }
 }

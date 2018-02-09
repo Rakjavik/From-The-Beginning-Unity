@@ -19,11 +19,11 @@ namespace rak.being.species.critter
             reproductionType = 'a';
             canBePregnant = true;
             maxAge = 1000;
-            growthToAgeRatio = .001;
-            stopGrowingAt = 60;
+            growthToAgeRatio = .0005;
+            maxSize = .5f;
             minSize = .2f;
             currentSize = minSize;
-            navMeshAgentSpeed = 1.5f;
+            navMeshAgentSpeed = .15f;
             name = Util.getRandomString("Critter") + " " + name;
             if (parents != null)
             {

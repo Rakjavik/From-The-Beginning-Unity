@@ -5,10 +5,28 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public interface Item
+public enum ItemType { RESOURCE, EQUIPMENT }
+
+public class Item
 {
-    string getName();
-    GameObject getGameObject();
+    private ItemType itemType;
+    private string name;
+    private GameObject gameObject;
+
+    public Item(string name,GameObject gameObject)
+    {
+        this.name = name;
+        this.gameObject = gameObject;
+    }
+
+    public string getName()
+    {
+        return name;
+    }
+    public GameObject getGameObject()
+    {
+        return gameObject;
+    }
 }
 
 public class Inventory

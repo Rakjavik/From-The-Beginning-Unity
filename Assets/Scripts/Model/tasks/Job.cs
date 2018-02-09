@@ -64,7 +64,7 @@ namespace rak.work.job
                 target = Util.FindClosest(Tags.TAG_RESOURCE, transform);
                 if(target != null)
                 {
-                    target.GetComponent<RAKResource>().setClaimed(true);
+                    target.GetComponent<RAKItem>().setClaimed(true);
                 }
                 // No resources available in area //
                 else

@@ -2,18 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RAKResource : MonoBehaviour,Item {
+public class RAKItem : MonoBehaviour {
 
-    public bool claimed = false;
+    public bool claimed = false; // Item has been targeted in a job to be picked up
 
-    public Item getAsItem()
+    private Item item;
+
+    private void Start()
     {
-        return (Item) this;
+        item = new Item("Resource", gameObject);
+    }
+
+    public Item getItem()
+    {
+        return item;
     }
 
     public GameObject getGameObject()
     {
         return this.gameObject;
+    }
+
+    public ItemType getItemType()
+    {
+        throw new System.NotImplementedException();
     }
 
     public string getName()

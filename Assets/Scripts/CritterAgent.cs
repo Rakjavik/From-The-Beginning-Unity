@@ -11,7 +11,7 @@
         public static float changeScaleEvery = .05f; // Scale has to change this much before it is updated on screen
         public static Material[] critterMaterials; // Different materials Critter can use
 
-
+        public float navMeshSpeedRatioOverried;
         
 
         // Pulls in the last severed body part and removes it from this object, this is called from a body part to get it's assignment
@@ -26,12 +26,10 @@
         // Use this for initialization
         void Start()
         {
-            base.initializeAgent(); // Super
-            inventory = new Inventory(1, gameObject);
+            base.initializeBaseAgent(); // Super
+            initializeCritterAgent();
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
-            floorYPosition = yFloorPositionToScaleRatio;
             Critter myBeing = new Critter(Util.getRandomString("Critter"), 'n', gameObject, null);
-            distanceToTargetValidRatio = 2.0f;
             distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
             setBeing(myBeing);
         }
@@ -40,20 +38,22 @@
             Debug.Log("Destorying object - " + transform.name);
         }
         // Initializes the nav mesh agent aspect
-        public new void initializeAgent()
+        public void initializeCritterAgent()
         {
             inventory = new Inventory(1, gameObject);
-            base.initializeAgent();
             debug(gameObject.name + " initializing with roomObject - " + roomObject.GetInstanceID());
-            floorYPosition = yFloorPositionToScaleRatio;
+            AgentInterface ai = this;
+            ai.initializeBeing(this, gameObject, 'n', "Critter", null);
             Critter myBeing = (Critter)getBeing();
-            distanceToTargetValidRatio = 2.0f;
-            yFloorPositionToScaleRatio = -2.1f;
+            distanceToTargetValidRatio = 1.5f;
+            
+            yFloorPositionToScaleRatio = -13.0f;
+            floorYPosition = yFloorPositionToScaleRatio*being.getCurrentSize();
             distanceToTargetValid = myBeing.getCurrentSize() * distanceToTargetValidRatio;
+            navMeshSpeedRatio = 1.2f;
             setBeing(myBeing);
 
             critterMaterials = new Material[2];
-
             critterMaterials[0] = (Material)Resources.Load("Materials/lava_001");
             critterMaterials[1] = (Material)Resources.Load("Materials/lava_002");
             if(DEBUG_DISABLED_VIEWSCREEN)
@@ -119,7 +119,7 @@
             child.transform.position = transform.position;
             AgentInterface ai = this;
             ai.initializeBeing(child, child.gameObject, 'n', Util.getLastName(this.being), new Critter[] { (Critter)being });
-            child.initializeAgent();
+            child.initializeCritterAgent();
             child.setInitialized(true);
             Material childMaterial;
             if (Time.time % 2 <= 1)

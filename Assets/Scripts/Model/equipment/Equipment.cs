@@ -7,7 +7,7 @@ namespace rak.equipment {
     public enum ArmorType {HEAD,SHOULDER,CHEST,ARMS,LEGS,FEET}
     public enum WeaponType { SINGLE,TWOHANDED,RANGED }
     public enum DamageType { SHARP,BLUNT}
-    public enum Material { PICARDIUM,QUARKIUM,DOCTONE}
+    public enum Material { ROCK }
 
     public interface EquipmentInterface
     {
@@ -20,7 +20,7 @@ namespace rak.equipment {
         protected BodyPart.BodyPartLocation[] canBeEquippedTo;
         private EquipmentType equipmentType;
         private Material material;
-        private new string name;
+        private string name;
         private int weight;
         private int wear;
 

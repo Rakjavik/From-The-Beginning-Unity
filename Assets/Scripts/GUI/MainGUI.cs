@@ -58,6 +58,7 @@
 
                     builder.AppendLine("Gender - " + being.getGender());
                     builder.AppendLine("Age - " + Util.numbersAfterDecimal(being.getAge(), 3));
+                    builder.AppendLine("Current Size - " + being.getCurrentSize());
                     builder.AppendLine("Species - " + being.getSpeciesName());
                     builder.AppendLine("Time preggers - " + being.getTimePregnanant());
                     builder.Append("Body parts detached - ");

@@ -17,7 +17,7 @@ namespace rak.being
         protected float currentSize;
         protected int maxAge;
         protected double growthToAgeRatio;
-        protected int stopGrowingAt;
+        protected float maxSize;
         protected float minSize;
         protected float navMeshAgentSpeed;
 
@@ -96,7 +96,7 @@ namespace rak.being
                 alive = false;
                 Debug.Log(name + " has died of old age at - " + maxAge);
             }
-            else if (age < stopGrowingAt)
+            else if (currentSize < maxSize)
             {
                 float newSize = (float)(age * growthToAgeRatio) + minSize;
                 if (newSize > minSize && newSize - currentSize > changeScaleEvery)
@@ -128,6 +128,14 @@ namespace rak.being
         public PhysicalBeing getPhysicalBeing()
         {
             return physicalBeing;
+        }
+        public float getNavmeshAgentSpeed()
+        {
+            return navMeshAgentSpeed;
+        }
+        public void setNavmeshAgentSpeed(float speed)
+        {
+            this.navMeshAgentSpeed = speed;
         }
 
     }

@@ -24,7 +24,7 @@ namespace rak.being.species
             }
             maxAge = 86400;
             growthToAgeRatio = .0005;
-            stopGrowingAt = 360;
+            maxSize = 360;
             minSize = .3f;
             currentSize = minSize;
             navMeshAgentSpeed = 3.0f;

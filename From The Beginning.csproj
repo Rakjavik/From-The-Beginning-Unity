@@ -343,6 +343,7 @@
     <Compile Include="Assets\Scripts\Model\Agent.cs" />
     <Compile Include="Assets\Scripts\Model\Being.cs" />
     <Compile Include="Assets\Scripts\Model\equipment\Equipment.cs" />
+    <Compile Include="Assets\Scripts\Model\equipment\Sword.cs" />
     <Compile Include="Assets\Scripts\Model\Inventory.cs" />
     <Compile Include="Assets\Scripts\Model\psyche\Psyche.cs" />
     <Compile Include="Assets\Scripts\Model\RAKVRroom.cs" />
@@ -357,7 +358,7 @@
     <Compile Include="Assets\Scripts\Model\tasks\RoomTasks.cs" />
     <Compile Include="Assets\Scripts\Model\tasks\Task.cs" />
     <Compile Include="Assets\Scripts\Model\tasks\Tasks.cs" />
-    <Compile Include="Assets\Scripts\NonLiving\RAKResource.cs" />
+    <Compile Include="Assets\Scripts\NonLiving\RAKItem.cs" />
     <Compile Include="Assets\Scripts\NonLiving\ResourceTree.cs" />
     <Compile Include="Assets\Scripts\Util\Util.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />

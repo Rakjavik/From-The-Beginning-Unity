@@ -67,7 +67,7 @@ namespace rak.util
                 else if (Tags.TAG_RESOURCE.Equals(tag)) // Is a resource
                 {
                     // Set claimed so we only have one agent at a time //
-                    if (!go.GetComponent<RAKResource>().isClaimed())
+                    if (!go.GetComponent<RAKItem>().isClaimed())
                     {
                         valid = true;
                     }

@@ -43,6 +43,7 @@
         protected JobQueue jobQueue; // Job queue
         protected float distanceToTargetValidRatio; // Ratio between size of agent and distance before it is considered at it's destination
         protected float yFloorPositionToScaleRatio; // Ration between size of agent and what is considered on the ground
+        protected float navMeshSpeedRatio;
 
         public BodyPart lastSevered = null; // The last severed body part, used for temporary storage so the severed part's thread can pick it up when created
         private ForwardPassAgent childOfHackable; // A script that gets put on body parts when they are severed
@@ -53,18 +54,14 @@
 
 
         // Use this for initialization
-        void Start()
+        protected void initializeBaseAgent()
         {
             figure = transform.Find("Figure").gameObject; // Conv object
             childOfHackable = GetComponent<ForwardPassAgent>(); // If present, this is a body part
-            if (!initialized && childOfHackable == null) // If it's NOT a body part and hasn't been initialized yet
+            // Is NOT a BodyPart //
+            if (childOfHackable == null)
             {
-                initializeAgent();
-                initialized = true;
-                AgentInterface ai = (AgentInterface)this;
-                //ai.birth();
-                //ai.birth();
-                //ai.birth();
+                
             }
             // This is a body part //
             else if (childOfHackable != null)
@@ -87,11 +84,9 @@
                 hackedOffMesh.transform.parent.gameObject.SetActive(true);
                 figure.SetActive(true);
                 gameObject.SetActive(true);
+                return;
             }
-        }
-        // Initialize componenets //
-        public void initializeAgent()
-        {
+
             selected = false;
             camera = viewToMoveTo.GetComponent<Camera>();
             viewScreen = GetComponentInChildren<Text>();
@@ -101,6 +96,8 @@
                 viewScreen.enabled = false;
             }
             agent = GetComponentInChildren<NavMeshAgent>();
+            // Disable agent till we are on mesh //
+            agent.enabled = false;
             collider = GetComponentInChildren<Collider>();
             jobQueue = new JobQueue(this);
             currentTask = jobQueue.getNextTask();
@@ -176,15 +173,17 @@
                             debug("Problem dropping off item for - " + getBeing().getName());
                         }
                     }
+                    // PICKUP //
                     else if (currentJob.isThisType(Job.JobType.PickUp))
                     {
                         debug("Picking up - " + target.name);
                         // Try to add item to inventory //
-                        if (inventory.addItem(target.GetComponent<RAKResource>().getAsItem()))
+                        if (inventory.addItem(target.GetComponent<RAKItem>().getItem()))
                         {
                             target.transform.SetParent(this.transform);
-                            target.transform.position = this.transform.position + Vector3.forward * being.getCurrentSize() + Vector3.right * .1f;
-                            target.transform.rotation = this.transform.rotation;
+                            //target.transform.position = figure.transform.position + Vector3.forward * 15.5f;
+                            target.transform.position = figure.transform.position + Vector3.left * -.2f;
+                            target.transform.rotation = figure.transform.rotation;
                             target.GetComponent<Collider>().enabled = false;
                             target.GetComponent<Rigidbody>().isKinematic = true;
                             
@@ -215,7 +214,7 @@
             // Object has just been released and is falling toward the ground //
             if (!agent.isActiveAndEnabled)
             {
-                debug("Floor Y position - " + floorYPosition + " Critter-" + transform.position.y);
+                debug(" Current Floor Y position - " + floorYPosition + "Current Critter-" + transform.position.y);
                 // Is the agent close enough to the floor to reengage the mesh agent? //
                 if (transform.position.y < floorYPosition)
                 {
@@ -358,8 +357,13 @@
             if (transform.Find("Figure").localScale.x != currentSize)
             {
                 transform.Find("Figure").localScale = new Vector3(currentSize, currentSize, currentSize);
-                distanceToTargetValid = currentSize * distanceToTargetValidRatio;
+                distanceToTargetValid = currentSize + currentSize * distanceToTargetValidRatio;
                 floorYPosition = currentSize * yFloorPositionToScaleRatio;
+                GetComponent<NavMeshAgent>().radius = currentSize * .5f;
+                GetComponent<NavMeshAgent>().height = currentSize * .5f;
+                figure.transform.localPosition += new Vector3(0, 0, 0) * currentSize;
+                being.setNavmeshAgentSpeed(currentSize * navMeshSpeedRatio);
+                agent.speed = being.getNavmeshAgentSpeed();
             }
 
         }
