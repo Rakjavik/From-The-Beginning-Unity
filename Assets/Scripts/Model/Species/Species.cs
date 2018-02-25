@@ -3,8 +3,10 @@
 namespace rak.being.species
 {
 
-    public class Species : Being
+    public class IntelligentSpecies : Being
     {
+        protected BodyPart[] partsList;
+
         protected SocialAspects speciesSocialAspects;
 
         protected GameObject gameObject;
@@ -13,10 +15,11 @@ namespace rak.being.species
         protected double timePregnant;
         protected double gestationTime;
         protected char gestationType;
+        
 
         protected bool waitingToGiveBirth = false;
 
-        protected Species(string name,char gender,GameObject gameObject,bool canBePregnant) : base(name,gender, canBePregnant)
+        protected IntelligentSpecies(string name,char gender,GameObject gameObject) : base(name,gender)
         {
             timePregnant = 0;
         }
@@ -72,6 +75,10 @@ namespace rak.being.species
         public SocialAspects getSocialAspects()
         {
             return speciesSocialAspects;
+        }
+        public BodyPart[] getPartsList()
+        {
+            return partsList;
         }
     }
 }

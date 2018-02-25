@@ -1,5 +1,6 @@
 ﻿namespace rak.unity.baseobject
 {
+    using rak.equipment;
     using System.Collections;
     using System.Collections.Generic;
     using System.Text;
@@ -10,33 +11,16 @@
     {
 
         private Inventory inventory;
-        private Text viewScreen;
 
         // Use this for initialization
         void Start()
         {
             inventory = new Inventory(50, gameObject);
-            viewScreen = gameObject.GetComponentInChildren<Text>();
         }
 
-        // Update is called once per frame
-        void Update()
+        public Inventory Inventory
         {
-            StringBuilder stringBuilder = new StringBuilder(gameObject.name).AppendLine();
-            if (inventory.hasEmptySpace())
-            {
-                stringBuilder.Append("\nInventory : ").Append(inventory.listItems(false)).Append("/").Append(inventory.getMaxInventorySize());
-            }
-            else
-            {
-                stringBuilder.Append("INVENTORY FULL");
-            }
-            viewScreen.text = stringBuilder.ToString();
-        }
-
-        public bool addItem(GameObject item)
-        {
-            return inventory.addItem(item);
+            get { return inventory; }
         }
     }
 }

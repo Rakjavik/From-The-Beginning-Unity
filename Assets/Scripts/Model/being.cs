@@ -1,4 +1,5 @@
-﻿using rak.being.species;
+﻿using rak.being.psyche;
+using rak.being.species;
 using rak.being.species.critter;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ namespace rak.being
 {
     public class Being
     {
+        protected PhysicalBeing physicalBeing;
+        protected Psyche psyche;
         protected bool alive;
         protected double age;
         protected string name;
@@ -16,22 +19,33 @@ namespace rak.being
         protected float currentSize;
         protected int maxAge;
         protected double growthToAgeRatio;
-        protected int stopGrowingAt;
+        protected float maxSize;
         protected float minSize;
         protected float navMeshAgentSpeed;
 
         protected Being[] parents;
         protected Being[] children;
 
-        protected Being(string name,char gender,bool canBePregnant)
+        protected Being(string name,char gender)
         {
             this.name = name;
             this.gender = gender;
-            this.canBePregnant = canBePregnant;
+            if(gender == 'r')
+            {
+                if(Time.time % 1 == 0)
+                {
+                    gender = 'm';
+                } else
+                {
+                    gender = 'f';
+                }
+            }
             parents = new Being[0];
             children = new Being[0];
             alive = true;
             age = 0;
+            currentSize = (float)(age * growthToAgeRatio) + minSize;
+            psyche = new Psyche(this);
         }
 
         public void addParent(Being newParent)
@@ -85,10 +99,9 @@ namespace rak.being
                 alive = false;
                 Debug.Log(name + " has died of old age at - " + maxAge);
             }
-            else if (age < stopGrowingAt)
+            else if (currentSize < maxSize)
             {
                 float newSize = (float)(age * growthToAgeRatio) + minSize;
-                //Debug.Log("Size - " + newSize);
                 if (newSize > minSize && newSize - currentSize > changeScaleEvery)
                 {
                     currentSize = newSize;
@@ -111,9 +124,30 @@ namespace rak.being
         {
             return currentSize;
         }
-        public float getNavMeshAgentSpeed()
+        public float getNavMeshAgent()
         {
             return navMeshAgentSpeed;
+        }
+        public PhysicalBeing getPhysicalBeing()
+        {
+            return physicalBeing;
+        }
+        public float getNavmeshAgentSpeed()
+        {
+            return navMeshAgentSpeed;
+        }
+        public void setNavmeshAgentSpeed(float speed)
+        {
+            this.navMeshAgentSpeed = speed;
+        }
+        public Psyche getPsyche()
+        {
+            return psyche;
+        }
+
+        public void update()
+        {
+            psyche.update();
         }
     }
 }

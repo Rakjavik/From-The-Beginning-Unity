@@ -5,9 +5,9 @@ namespace rak.work.tasks
     public abstract class Tasks
     {
 
-        public enum TaskType { IDLE,RESOURCE_GATHERING,NSFW};
+        public enum TaskType { IDLE,RESOURCE_GATHERING,NSFW,EAT};
 
-        public static Task getNewTask(TaskType type,JobQueue jobQueue)
+        public static Task getNewTask(TaskType type)
         {
             Task newTask = null;
             if(type == TaskType.IDLE)
@@ -22,7 +22,10 @@ namespace rak.work.tasks
             {
                 newTask = new Task("Boom Chicka Wow Wow", "NSFW", false,TaskType.NSFW);
             }
-            jobQueue.addJobsToBottom(newTask.getJobList());
+            else if (type == TaskType.EAT)
+            {
+                newTask = new Task("Eat", "EAT", false, TaskType.EAT);
+            }
             return newTask;
         }
     }

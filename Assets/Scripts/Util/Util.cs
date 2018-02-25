@@ -1,9 +1,11 @@
 ﻿using rak.being;
 using rak.being.species;
 using rak.being.species.critter;
+using rak.equipment;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using rak.unity.nonliving;
 using UnityEngine;
 
 namespace rak.util
@@ -30,7 +32,7 @@ namespace rak.util
 
         private static string[] parseList()
         {
-            string List = System.IO.File.ReadAllText("C:/Users/Public/Documents/Unity Projects/From The Beginning/Assets/misc/Text/CritterLast.txt");
+            string List = System.IO.File.ReadAllText("C:/Users/Public/Documents/Unity Projects/From The Beginning/Assets/Scripts/misc/Text/CritterLast.txt");
             List<string> arrayList = new List<string>();
             foreach (string entry in List.Split(' '))
             {
@@ -49,13 +51,14 @@ namespace rak.util
         }
 
         // Find closes object based on tag //
-        public static GameObject FindClosest(string tag,Transform transform)
+        public static GameObject FindClosest(string tag, Transform transform)
         {
             GameObject[] gos;
             gos = GameObject.FindGameObjectsWithTag(tag);
             GameObject closest = null;
-            float distance = Mathf.Infinity; // Any distance
+            float distance = Mathf.Infinity;
             Vector3 position = transform.position;
+            
             foreach (GameObject go in gos)
             {
                 bool valid = false; // Did we find a valid object
@@ -65,15 +68,10 @@ namespace rak.util
                 }
                 else if (Tags.TAG_RESOURCE.Equals(tag)) // Is a resource
                 {
-                    // Check that the resource is in a state that it can be picked up //
-                    MeshRenderer renderer = go.GetComponent<MeshRenderer>();
-                    if (renderer.enabled)
+                    // Set claimed so we only have one agent at a time //
+                    if (!go.GetComponent<RAKItem>().isClaimed())
                     {
-                        // Set claimed so we only have one agent at a time //
-                        if (!go.GetComponent<Resource>().isClaimed())
-                        {
-                            valid = true;
-                        }
+                        valid = true;
                     }
                 }
                 // A valid target was found //
@@ -83,23 +81,61 @@ namespace rak.util
                     float curDistance = diff.sqrMagnitude;
                     if (curDistance < distance)
                     {
+                        if(curDistance < .1)
+                        {
+                            Debug.Log("");
+                        }
                         closest = go;
                         distance = curDistance;
                     }
                 }
-                // Could not find valid target for agent //
-                else
+            }
+            if(closest == null)
+            {
+                return null;
+            }
+            Debug.Log("Closest " + tag + " found");
+            return closest;
+        }
+        public static GameObject FindClosestResource(Transform originTransform,ResourceType resourceType)
+        {
+            GameObject[] gos;
+            gos = GameObject.FindGameObjectsWithTag(Tags.TAG_RESOURCE);
+            GameObject closest = null;
+            float distance = Mathf.Infinity;
+            Vector3 position = originTransform.position;
+
+            foreach (GameObject go in gos)
+            {
+                bool valid = false; // Did we find a valid object
+                if(resourceType == ResourceType.FOOD)
                 {
-                    //Debug.Log(gameObject.name + " can't find target with tag " + tag);
+                    Resource resource = (Resource) go.GetComponent<RAKItem>().getItem();
+                    if(resource.getResourceType() == ResourceType.FOOD)
+                    {
+                        valid = true;
+                    }
+                }
+                // A valid target was found //
+                if (valid)
+                {
+                    Vector3 diff = go.transform.position - position;
+                    float curDistance = diff.sqrMagnitude;
+                    if (curDistance < distance)
+                    {
+                        if (curDistance < .1)
+                        {
+                            Debug.Log("");
+                        }
+                        closest = go;
+                        distance = curDistance;
+                        Debug.Log("Closes object distance - " + curDistance);
+                    }
                 }
             }
-            // Closest target found //
-            if (closest != null)
+            if (closest == null)
             {
-                if (Tags.TAG_RESOURCE.Equals(tag))
-                {
-                    closest.GetComponent<Resource>().setClaimed(true);
-                }
+                return null;
             }
             return closest;
         }
